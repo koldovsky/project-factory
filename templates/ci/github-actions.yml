@@ -1,0 +1,69 @@
+# CI — the loop nobody can skip. Copy to .github/workflows/ci.yml.
+# Mirrors the local gates deterministically: if it isn't green here, it isn't
+# done, regardless of what any agent or human claims.
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      # Provide test-database and auth secrets via repository secrets.
+      DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      BETTER_AUTH_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # --- static, fast, deterministic ---
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Traceability chain (and freshness of generated report)
+        run: |
+          node scripts/check-traceability.mjs --check-fresh
+          node scripts/check-traceability.mjs ${{ github.ref_name == 'main' || github.ref_name == 'master' && '--release' || '' }}
+      - name: OpenSpec strict validation
+        run: npx openspec validate --all --strict
+      - name: Dependency audit (fail on high+)
+        run: npm audit --audit-level=high
+
+      # --- test battery ---
+      - name: Unit tests + coverage
+        run: npm run test:coverage
+      - name: Coverage ratchet
+        run: node scripts/check-coverage-ratchet.mjs
+      - name: DB integration tests
+        run: npm run test:integration
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: E2E tests
+        run: npm run test:e2e
+
+      # --- production build ---
+      - name: Build
+        run: npm run build
+
+      # --- evidence ---
+      - name: Upload QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-evidence
+          path: |
+            docs/qa/traceability-report.md
+            trace/trace.json
+            coverage/coverage-summary.json
+            playwright-report/
+          if-no-files-found: ignore
