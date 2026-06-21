@@ -79,7 +79,7 @@ playbook assigns them. The user has opted into multi-agent orchestration.
    placeholders: `test:run`, `test:integration`, `test:e2e`, `test:coverage`,
    `lint`, `build`, `db:generate`, `db:migrate`, `db:seed-admin`,
    `qa:verify`, `qa:record-demos`, `qa:record-proof`, `check:trace`,
-   `check:coverage`.
+   `check:coverage`, `check:eval`.
    Copy `project-factory/scripts/qa-verify.reference.mjs` to
    `scripts/qa-verify.mjs` and adapt the command list to the scripts that
    exist so far.
@@ -88,6 +88,11 @@ playbook assigns them. The user has opted into multi-agent orchestration.
    - Copy `check-traceability.reference.mjs` → `scripts/check-traceability.mjs`
      and `check-coverage-ratchet.reference.mjs` →
      `scripts/check-coverage-ratchet.mjs`.
+   - Copy `check-eval-ratchet.reference.mjs` → `scripts/check-eval-ratchet.mjs`;
+     create `evals/cases/` + `evals/results/` and copy `evals/README.md`. The
+     graded-quality bar is part of the loop — it exists before the features it
+     grades. (LLM judging runs in the `eval-suite` workflow; CI runs only the
+     deterministic ratchet, so no API key is needed in CI.)
    - Git hooks: pre-commit (lint staged + tsc + secret scan + trace
      validator) and commit-msg (trace trailers) via
      `git config core.hooksPath .githooks`. Verify they FIRE with a test
@@ -183,7 +188,10 @@ c. **Tests:** the **test-engineer** subagent adds unit tests for every pure
    including locale/edge inputs: decimal commas, trailing zeros, oversized
    values, blank submissions) and a real-DB smoke flow script for the slice.
    Every test file carries `@trace FR-x` annotations for the FRs it covers —
-   `node scripts/check-traceability.mjs` reports the gaps.
+   `node scripts/check-traceability.mjs` reports the gaps. It also authors 1–3
+   eval cases (`evals/cases/<domain>.eval.ts`) for the slice's key error-surface
+   / qualitative-NFR behavior — rubric + `@trace` — so the graded-quality bar
+   covers this slice (graded in Phase 6).
 
 d. **Validation battery** + the slice's smoke test. Fix until green.
 
@@ -233,10 +241,16 @@ green, smoke passed, review findings fixed, change archived, handoff updated.
    matching video frame sizes; before passing G6, VISUALLY REVIEW every
    .png and frame-sensitive video moment — generated-but-unwatched
    artifacts are not evidence.
-3. Run `npm run qa:verify` to regenerate
+3. **Evals — the quality bar.** Run the `eval-suite` workflow over the eval
+   cases authored per slice. Review `docs/qa/eval-report.md`; fix any failing
+   case and re-run (never waive a failing rubric). Establish/ratchet the
+   baseline (`node scripts/check-eval-ratchet.mjs --update`) and commit it. The
+   step-2 recordings now *illustrate* representative eval cases — keep them all;
+   the eval decides pass/fail.
+4. Run `npm run qa:verify` to regenerate
    `docs/qa/automated-verification-latest.md`.
 
-**Gate G6** → commit `qa proof pack + demo recordings`.
+**Gate G6** → commit `qa proof pack + eval baseline + demo recordings`.
 
 ## Phase 7 — Global review, docs, release
 
@@ -268,7 +282,10 @@ bug report:
 2. **Cluster by root cause.** Fix the CLASS, not the symptom (e.g., one
    error-surface fix closes seven 500s). Apply the fix everywhere the class
    occurs, including screens QA never reached.
-3. Regression-test every fix (unit where possible). Re-run the full battery.
+3. Regression-test every fix (unit where possible). Where the bug was a quality
+   defect (unclear error, confusing empty/error state), add a regression EVAL
+   case (rubric + `@trace BUG-x`) too, not only a unit test. Re-run the full
+   battery.
 4. Re-test the original reproduction steps live in a browser.
 5. **Bug-fix proof recordings:** adapt
    `project-factory/scripts/record-proof-recordings.reference.ts` — one clip

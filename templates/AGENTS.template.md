@@ -63,10 +63,25 @@ npm run test:integration   # once the layer exists
 npm run test:e2e           # once the layer exists
 npm run build
 npx openspec validate --all --strict
+node scripts/check-eval-ratchet.mjs   # once evals exist — graded-quality bar
 ```
 
 Do not archive OpenSpec changes before implementation AND a real-DB smoke
 test pass. Keep `.env.local` private; never commit or print it.
+
+## Evals (graded quality, not just correctness)
+
+Tests assert exact results; evals grade *quality* a unit test can't — error
+clarity, empty-state usability, copy tone — scored 0-100 against a rubric.
+
+- Cases live in `evals/cases/*.eval.ts` (scenario + `produce()` + rubric +
+  `@trace` ids). Group cases by `dimension`; the ratchet guards each dimension.
+- The `eval-suite` workflow grades them with a fresh `eval-judge` agent
+  (maker≠checker), writing `docs/qa/eval-report.md` + `evals/results/*.json`.
+- `node scripts/check-eval-ratchet.mjs` guards the committed score in CI (no
+  API key). Quality may ratchet up, never silently drop. Wire `check:eval`.
+- **Recordings are kept** — they *illustrate* a case for humans; the eval is
+  the *bar* that decides pass/fail. See `evals/README.md`.
 
 ## Environment notes
 

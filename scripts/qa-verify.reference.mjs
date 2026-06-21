@@ -32,6 +32,13 @@ const commands = [
     args: ["run", "test:e2e"],
   },
   {
+    // Guards the committed eval score (quality bar). Needs evals/results/
+    // latest.json from the eval-suite workflow — include once evals exist.
+    name: "eval-ratchet",
+    command: "node",
+    args: ["scripts/check-eval-ratchet.mjs"],
+  },
+  {
     name: "lint",
     command: "npm",
     args: ["run", "lint"],

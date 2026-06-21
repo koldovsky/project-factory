@@ -21,6 +21,7 @@ git commit --allow-empty -m "chore: verify hooks fire"   # hooks must run
 - [ ] **The loop is installed** (MASTER-PROMPT 5b): git hooks (pre-commit +
       commit-msg), Claude Code PostToolUse hook, CI workflow file,
       `scripts/check-traceability.mjs` + `scripts/check-coverage-ratchet.mjs`
+      + `scripts/check-eval-ratchet.mjs` + `evals/` (cases dir + README)
       in place.
 - [ ] `AGENTS.md` + `CLAUDE.md` in place; stack ADR(s) written in `docs/adr/`.
 - [ ] OpenSpec initialized (`openspec/project.md`, empty `openspec/specs/`).
@@ -65,6 +66,8 @@ node scripts/check-traceability.mjs        # ticked tasks, FR chain, @trace cove
 - [ ] All tasks.md checkboxes ticked, truthfully (validator enforces after archive).
 - [ ] Unit tests added for all new pure domain logic (incl. locale/edge
       inputs), each annotated `@trace FR-x`.
+- [ ] Eval case(s) authored for the slice's key error-surface / qualitative
+      NFR behavior (`evals/cases/*.eval.ts`, rubric + `@trace`); graded in G6.
 - [ ] Real-DB smoke flow executed and passed.
 - [ ] `review-gate` workflow run; ALL confirmed (and contested) findings fixed;
       commands re-run green. Reviewer agents ≠ implementer agent.
@@ -94,6 +97,13 @@ npm run test:coverage && node scripts/check-coverage-ratchet.mjs --update
       evidence cells filled (or an explicit reason).
 - [ ] Manual test plan executable by a non-developer; demo script written.
 - [ ] Risk register and acceptance report drafted.
+- [ ] **Eval suite run** (`eval-suite` workflow); `docs/qa/eval-report.md`
+      reviewed; every eval case passes its rubric (failures fixed, never
+      waived); judge-disagreement cases resolved.
+- [ ] **Eval baseline committed** (`quality/eval-baseline.json` via
+      `node scripts/check-eval-ratchet.mjs --update`) — the ratchet guards it
+      from here on. Recordings illustrate representative eval cases; the eval
+      decides pass/fail.
 - [ ] Demo recordings: one clip per capability + security-negative clip,
       each with video + screenshot, indexed by manifest.json + README.
 - [ ] Responsive scenarios recorded as ONE CLIP PER VIEWPORT (video frame
@@ -117,6 +127,8 @@ npm audit --audit-level=high
 
 - [ ] Global `review-gate` run over the whole codebase; all confirmed
       findings fixed; commands green.
+- [ ] Eval ratchet green (`check:eval`, part of `qa:verify`): no dimension
+      dropped below the committed baseline.
 - [ ] Authz matrix verified per route × role; no secrets in repo/history;
       error-surface audit clean.
 - [ ] `docs/technical/` complete; estimation + delivery report written.
@@ -136,7 +148,9 @@ node scripts/check-traceability.mjs        # every BUG-x fix has a @trace'd regr
       (uat-triage workflow), low-confidence verdicts double-checked.
 - [ ] Confirmed defects clustered by mechanism; each fix covers the class,
       including latent locations.
-- [ ] Every fix has a regression test referencing the bug.
+- [ ] Every fix has a regression test referencing the bug; quality defects
+      (unclear errors, confusing empty/error states) also get a regression eval
+      case (`@trace BUG-x`).
 - [ ] Full battery green; original reproduction steps re-tested live.
 - [ ] Bug-fix proof recordings: clip + screenshot + md explainer per fixed
       bug; README index; non-recordable bugs explained in README.

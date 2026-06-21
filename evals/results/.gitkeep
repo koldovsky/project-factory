@@ -1,0 +1,4 @@
+# Generated eval artifacts land here (committed as evidence):
+#   latest.json    — per-dimension scores + per-case verdicts (read by the eval ratchet)
+#   manifest.json  — the requirement ids each case proves (evidence index)
+# Both are written by the `eval-suite` workflow. Do not hand-edit.

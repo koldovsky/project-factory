@@ -72,6 +72,8 @@
         blank inputs.
 - [ ] 5.2 Unit: {{calculations / state machine / parsers}}.
 - [ ] 5.3 DB smoke flow script for this slice.
+- [ ] 5.4 Eval case(s) in `evals/cases/<domain>.eval.ts` for the slice's key
+        error-surface / qualitative NFR behavior (rubric + `@trace` the NFR/FR).
 
 ## 6. Validation, docs, and archive prep
 - [ ] 6.1 `npm run test:run`

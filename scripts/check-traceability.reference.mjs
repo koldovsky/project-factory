@@ -34,7 +34,7 @@ const PATHS = {
   specsDir: "openspec/specs",
   changesDir: "openspec/changes",
   qaDir: "docs/qa",
-  testDirs: ["lib", "tests", "app", "src", "components"],
+  testDirs: ["lib", "tests", "app", "src", "components", "evals"],
   reportOut: "docs/qa/traceability-report.md",
   jsonOut: "trace/trace.json",
 };
@@ -137,7 +137,10 @@ if (!planText) {
 
 // ---------- 4. test traces ----------
 const testTraces = new Map(); // id -> [test files]
-const isTestFile = (f) => /\.(test|spec)\.(ts|tsx|js|mjs)$/.test(f) || /integration|e2e/.test(f);
+// `.eval.ts` files are graded-quality eval cases (evals/cases/*) — they carry
+// `@trace` ids just like tests, so an NFR proven only by an eval still joins
+// the chain instead of showing as an evidence gap.
+const isTestFile = (f) => /\.(test|spec|eval)\.(ts|tsx|js|mjs)$/.test(f) || /integration|e2e/.test(f);
 for (const dir of PATHS.testDirs) {
   for (const file of walk(dir, isTestFile)) {
     const text = read(file) ?? "";

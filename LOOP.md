@@ -79,11 +79,18 @@ argued with.
 The **coverage ratchet** embodies the loop's direction: quality constraints
 may tighten over time, never silently loosen.
 
+The **eval ratchet** extends that direction to *graded quality* (error
+clarity, usability, copy tone): the `eval-suite` workflow scores behavior
+against rubrics with a fresh `eval-judge` (maker≠checker), and
+`check-eval-ratchet` guards the committed score in CI. The bar is the eval,
+not the demo — recordings *illustrate* a case; the eval *decides* it.
+
 ## Anti-patterns the framework explicitly counters
 
 - **Self-grading** — *"the model that wrote the code is way too nice grading
   its own homework."* Countered structurally: maker/checker separation in
-  review-gate and uat-triage; deterministic gates that cannot be sweet-talked.
+  review-gate, uat-triage, and the eval-suite's fresh `eval-judge`;
+  deterministic gates (and ratchets) that cannot be sweet-talked.
 - **Comprehension debt** — *"understanding rots if you don't read what the
   loops produce."* Countered with forced legibility: per-clip markdown
   explainers, generated traceability reports, design.md trade-off sections,
