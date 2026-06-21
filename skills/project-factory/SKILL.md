@@ -38,7 +38,9 @@ per-slice loop (spec → tests(red) → implement(green) → battery → review-
 archive) → cross-cutting hardening → QA proof + recordings → global review +
 evals + release → UAT loop.
 
-**Full detail is in the plugin, loaded on demand — do not duplicate it here:**
+**Full detail is loaded on demand — do not duplicate it here** (paths below use
+`${CLAUDE_PLUGIN_ROOT}`, the plugin root in Claude Code; in Cursor/Codex/Copilot
+read the same files from the repo root):
 - `${CLAUDE_PLUGIN_ROOT}/MASTER-PROMPT.md` — the complete 8-phase playbook.
 - `${CLAUDE_PLUGIN_ROOT}/checklists/quality-gates.md` — gates G0–G8 (commands with exit codes).
 - `${CLAUDE_PLUGIN_ROOT}/LOOP.md` — why it is built this way (nested loops, trace chain, maker≠checker).

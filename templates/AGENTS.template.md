@@ -11,6 +11,24 @@ package's bundled docs) before writing any code. Heed deprecation notices.
 
 Use `docs/requirements.md` to understand the requirements for the project.
 
+## Project Factory (works in any tool)
+
+This project is delivered with **Project Factory**, a spec-driven multi-agent
+framework that runs under any AI coding tool:
+
+- **Claude Code:** the `project-factory` plugin — `/project-factory:init` (new)
+  or `/project-factory:onboard` (existing).
+- **Cursor:** the `project-factory` plugin / `.cursor/rules/` — same commands.
+- **GitHub Copilot:** `.github/copilot-instructions.md` + the
+  `/project-factory-init` / `-onboard` prompts.
+- **Codex / others:** this `AGENTS.md` (read natively) + `.codex/prompts/`.
+
+The deterministic loop — `scripts/check-*` (traceability, coverage, eval,
+trajectory), git hooks, CI, OpenSpec specs, and the gates — is **identical in
+every tool** (pure Node + git). Only orchestration differs: Claude Code fans out
+subagents in parallel; elsewhere run review / eval / spec passes sequentially
+with fresh context (maker ≠ checker). See `docs/portability.md`.
+
 ## Project Handoff Protocol
 
 Before planning or implementing any substantive change, read:

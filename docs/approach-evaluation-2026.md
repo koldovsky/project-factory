@@ -3,7 +3,7 @@
 **Date:** 2026-06-21 (Kyiv)
 **Scope:** Evaluate the approach encoded in this `project-factory/` framework against the most recent thinking on AI-assisted software development.
 **Update 2026-06-21:** Upgrade **complete** — every gap below is closed across five steps: evals (§4.2), scheduled automations (§4.1), test-first (§4.4), trajectory evals (§4.2), and the final push (context engineering §4.3; parallelism, model/effort tiers, connectors §4.5). The rubric is fully ✅. See [`evals/README.md`](../evals/README.md), [`automations/README.md`](../automations/README.md), and `docs/context-architecture.md` (template).
-**Packaging 2026-06-21:** the framework is now a **Claude Code plugin** — an orchestrator skill (`skills/project-factory/`) + `/project-factory:init` / `:onboard` commands that install the loop and drive the agents on any new or existing repo. See [README](../README.md).
+**Packaging 2026-06-21:** the framework is now a **Claude Code plugin** — an orchestrator skill (`skills/project-factory/`) + `/project-factory:init` / `:onboard` commands that install the loop and drive the agents on any new or existing repo. It is also **agent-agnostic**: Cursor (`.cursor-plugin/` + `.cursor/rules/`), GitHub Copilot (`.github/`), and Codex (`.codex/`) adapters share the same `AGENTS.md` + skill core, with the deterministic loop identical across tools and only the orchestration substrate degrading gracefully. See [README](../README.md) and [`portability.md`](portability.md).
 
 **Reference corpus:**
 

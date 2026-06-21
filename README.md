@@ -77,6 +77,25 @@ reverse-engineered baseline). Everything else runs autonomously, gate by gate.
 > Prefer the manual flow? You can still read `MASTER-PROMPT.md` and execute it
 > directly — the plugin simply automates the install + dispatch.
 
+### Works in your tool
+
+Project Factory is **agent-agnostic** — the same gated lifecycle runs under
+Claude Code, Cursor, GitHub Copilot, and Codex, with `AGENTS.md` + the
+`project-factory` skill as the portable core:
+
+- **Claude Code** — the `.claude-plugin/` plugin (above).
+- **Cursor** — install the `.cursor-plugin/` plugin, or commit
+  `.cursor/rules/project-factory.mdc`; same `/project-factory:init` / `:onboard`.
+- **GitHub Copilot** — `.github/copilot-instructions.md` + the
+  `/project-factory-init` / `-onboard` prompt files.
+- **Codex / others** — `AGENTS.md` (read natively) + `.codex/prompts/`.
+
+The deterministic loop (specs, gates, `check-*`, evals, trajectory) is identical
+everywhere; only the orchestration substrate differs — parallel subagent fan-out
+on Claude Code, sequential fresh-context passes elsewhere (maker ≠ checker
+preserved). `init --tools=…` lays the adapters into a target repo. Full detail:
+[docs/portability.md](docs/portability.md).
+
 ## Contents
 
 | Path | Purpose |

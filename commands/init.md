@@ -1,6 +1,6 @@
 ---
 description: Install the Project Factory loop (workflows, agents, check-* scripts, git hooks, CI, OpenSpec, templates) into the current repo — idempotent and non-destructive. Run once before any feature work.
-argument-hint: "[--with-automations] [--force]"
+argument-hint: "[--tools=claude,cursor,codex,copilot] [--with-automations] [--force]"
 ---
 
 # /project-factory:init — install the loop
@@ -11,8 +11,9 @@ up. This is **Gate G0**: no feature work before the loop that guards it exists.
 The app stack itself (e.g. `create-next-app`) is NOT installed here — that is a
 later orchestrator step after the stack decision; `init` is stack-agnostic.
 
-Flags in `$ARGUMENTS`: `--with-automations` also installs the cloud automations
-workflow; `--force` overwrites framework-owned files instead of skipping.
+Flags in `$ARGUMENTS`: `--tools=` selects which tool adapters to install
+(default all — see step 10); `--with-automations` also installs the cloud
+automations workflow; `--force` overwrites framework-owned files instead of skipping.
 
 ## Hard rules
 - **Idempotent + non-destructive.** For every target: if it exists, SKIP and
@@ -70,8 +71,24 @@ workflow; `--force` overwrites framework-owned files instead of skipping.
    Leave existing scripts untouched; adapt `qa-verify`'s battery to the scripts
    that actually exist.
 
-10. **Smoke + report.** Run `node scripts/check-traceability.mjs` (it should run,
+10. **Multi-tool adapters** (so the repo runs in any AI tool). For each tool in
+    `--tools` (default `claude,cursor,codex,copilot`), copy the matching entry
+    files from the plugin root into the target, skip-if-exists:
+    - **claude:** the agents/workflows above; the plugin provides the skill +
+      commands globally — nothing extra to copy.
+    - **cursor:** `.cursor/rules/project-factory.mdc`.
+    - **copilot:** `.github/copilot-instructions.md` + `.github/prompts/project-factory-*.prompt.md`.
+    - **codex:** `.codex/prompts/project-factory-*.md`.
+    `AGENTS.md` (step 8) is the shared rules entry every tool reads. Copilot and
+    Codex have no global plugin, so when either is selected also **vendor** the
+    orchestration docs into `.project-factory/` (`MASTER-PROMPT.md`, `LOOP.md`,
+    `checklists/quality-gates.md`, `skills/project-factory/`, `commands/`,
+    `docs/portability.md`) and rewrite the copied adapters' references from the
+    repo root to `.project-factory/` so they resolve there.
+
+11. **Smoke + report.** Run `node scripts/check-traceability.mjs` (it should run,
     reporting warnings on a fresh repo — that's expected before Phase 1). Print
-    the **added vs skipped** table and the exact next step (greenfield → start
-    the orchestrator at Phase 1; existing → you arrived here via
-    `/project-factory:onboard`, continue with reverse-engineering).
+    the **added vs skipped** table (incl. which tool adapters were installed) and
+    the exact next step (greenfield → start the orchestrator at Phase 1; existing
+    → you arrived here via `/project-factory:onboard`, continue with
+    reverse-engineering).

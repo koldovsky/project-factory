@@ -6,6 +6,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 <!-- END:nextjs-agent-rules -->
 
+> This repo is a **multi-tool plugin** (Claude Code · Cursor · Codex · Copilot),
+> with `AGENTS.md` + the `project-factory` skill as the portable core. See
+> [`docs/portability.md`](docs/portability.md) and the README for install per tool.
+
 Use `docs/requirements.md` to understand the requirements for the project.
 
 ## Project Handoff Protocol

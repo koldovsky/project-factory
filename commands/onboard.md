@@ -15,8 +15,9 @@ detail: `${CLAUDE_PLUGIN_ROOT}/skills/project-factory/references/existing-projec
    test runner, CI. Record as **ADR-0001** (adopt what's there; don't migrate).
 
 2. **Install the loop (non-destructive merge)** — run the `/project-factory:init`
-   steps in merge mode: copy agents/workflows/scripts/hooks/CI/OpenSpec/templates
-   and wire `package.json` scripts, **SKIPPING anything that already exists** and
+   steps in merge mode: copy agents/workflows/scripts/hooks/CI/OpenSpec/templates,
+   wire `package.json` scripts, and install the **multi-tool adapters** (init
+   step 10 — `--tools` honored), **SKIPPING anything that already exists** and
    **merging** `.claude/settings.json` / CI / hooks rather than replacing. Adapt
    `qa-verify`'s battery to the scripts the project has. Report **added vs skipped**.
 

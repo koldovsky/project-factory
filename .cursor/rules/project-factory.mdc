@@ -1,0 +1,18 @@
+---
+description: Project Factory — spec-driven multi-agent delivery. Follow AGENTS.md and the project-factory skill; the entry commands install a gated loop and drive the lifecycle.
+alwaysApply: true
+---
+
+This repository uses **Project Factory**, a spec-driven multi-agent delivery
+framework. Operate under it:
+
+- Read **`AGENTS.md`** for the operating rules and the lifecycle — it is the
+  canonical, tool-agnostic entry every agent honors.
+- The orchestrator is `skills/project-factory/SKILL.md`; the full playbook is
+  `MASTER-PROMPT.md`; the hard gates are `checklists/quality-gates.md`.
+- To start: the `project-factory` skill auto-triggers (e.g. "build this to spec",
+  "set up project factory"), or run its commands `/project-factory:init` (new
+  repo) or `/project-factory:onboard` (existing repo).
+- The deterministic loop (`scripts/check-*`, OpenSpec specs, gates, evals,
+  trajectory checks, tests) is identical here — it is pure Node + git, not
+  Claude-specific. See `docs/portability.md`.

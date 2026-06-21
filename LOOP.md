@@ -10,6 +10,13 @@ loop on every edit, the validation battery and adversarial review close the
 slice loop, and recordings plus UAT triage close the outer loop with the
 customer. Prompts *ask* for quality; loops *guarantee* it.
 
+Because those loops are **deterministic checks (Node + git) and committed
+artifacts** — not features of any one tool — they run identically under Claude
+Code, Cursor, Copilot, Codex, or any agent that reads `AGENTS.md`. Only the
+*orchestration substrate* differs per tool (parallel fan-out vs sequential
+passes); the gates, specs, evals, and trace chain are the same everywhere. See
+[`docs/portability.md`](docs/portability.md).
+
 ## Three nested loops
 
 ```
