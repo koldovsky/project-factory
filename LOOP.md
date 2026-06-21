@@ -85,6 +85,13 @@ against rubrics with a fresh `eval-judge` (maker≠checker), and
 `check-eval-ratchet` guards the committed score in CI. The bar is the eval,
 not the demo — recordings *illustrate* a case; the eval *decides* it.
 
+**Trajectory evals** close the loop's other half. Output evals grade the
+*result*; trajectory evals grade the *route* each slice took. `check-trajectory`
+proves what git can (review evidence ran clean, `Slice:` trailers, module
+scope); the `trajectory-eval` workflow judges what it can't (process order, no
+test weakened, no scope drift) with a fresh judge — never claiming the
+deterministic check can verify test-first ordering it cannot.
+
 ## Anti-patterns the framework explicitly counters
 
 - **Self-grading** — *"the model that wrote the code is way too nice grading

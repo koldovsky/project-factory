@@ -17,6 +17,11 @@ const commands = [
     args: ["scripts/check-traceability.mjs"],
   },
   {
+    name: "trajectory",
+    command: "node",
+    args: ["scripts/check-trajectory.mjs"],
+  },
+  {
     name: "unit-tests",
     command: "npm",
     args: ["run", "test:run"],

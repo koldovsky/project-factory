@@ -60,6 +60,7 @@ node scripts/check-traceability.mjs        # spec-mention check: every MVP FR ci
 npm run lint && npm run test:run && npm run build
 npx openspec validate --all --strict
 node scripts/check-traceability.mjs        # ticked tasks, FR chain, @trace coverage
+node scripts/check-trajectory.mjs          # review evidence clean, Slice: trailer, scope
 ```
 
 - [ ] Change folder validated strictly before implementation started.
@@ -74,6 +75,8 @@ node scripts/check-traceability.mjs        # ticked tasks, FR chain, @trace cove
 - [ ] Real-DB smoke flow executed and passed.
 - [ ] `review-gate` workflow run; ALL confirmed (and contested) findings fixed;
       commands re-run green. Reviewer agents ≠ implementer agent.
+- [ ] Review evidence persisted (`openspec/changes/<slice>/review-findings.json`,
+      `clean:true`) and `check-trajectory` green (in-scope, `Slice:` trailer).
 - [ ] No server action in the slice can 500 on user input; no silent external
       failures; forms keyed by server state.
 - [ ] Change archived, `openspec list` shows no active changes,
@@ -125,6 +128,7 @@ npm run test:coverage && node scripts/check-coverage-ratchet.mjs --update
 npm run qa:verify
 node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
 node scripts/check-traceability.mjs --check-fresh
+node scripts/check-trajectory.mjs --release --check-fresh
 npm audit --audit-level=high
 ```
 
@@ -132,6 +136,9 @@ npm audit --audit-level=high
       findings fixed; commands green.
 - [ ] Eval ratchet green (`check:eval`, part of `qa:verify`): no dimension
       dropped below the committed baseline.
+- [ ] Trajectory: `check-trajectory --release` green; `trajectory-eval`
+      workflow run and `docs/qa/trajectory-eval-report.md` reviewed (failing
+      judgements addressed).
 - [ ] Authz matrix verified per route × role; no secrets in repo/history;
       error-surface audit clean.
 - [ ] `docs/technical/` complete; estimation + delivery report written.

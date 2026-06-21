@@ -79,7 +79,7 @@ playbook assigns them. The user has opted into multi-agent orchestration.
    placeholders: `test:run`, `test:integration`, `test:e2e`, `test:coverage`,
    `lint`, `build`, `db:generate`, `db:migrate`, `db:seed-admin`,
    `qa:verify`, `qa:record-demos`, `qa:record-proof`, `check:trace`,
-   `check:coverage`, `check:eval`.
+   `check:coverage`, `check:eval`, `check:trajectory`.
    Copy `project-factory/scripts/qa-verify.reference.mjs` to
    `scripts/qa-verify.mjs` and adapt the command list to the scripts that
    exist so far.
@@ -93,6 +93,9 @@ playbook assigns them. The user has opted into multi-agent orchestration.
      graded-quality bar is part of the loop — it exists before the features it
      grades. (LLM judging runs in the `eval-suite` workflow; CI runs only the
      deterministic ratchet, so no API key is needed in CI.)
+   - Copy `check-trajectory.reference.mjs` → `scripts/check-trajectory.mjs`
+     (deterministic process audit: review evidence, `Slice:` trailers, module
+     scope). Its LLM half is the `trajectory-eval` workflow (Phase 7).
    - Git hooks: pre-commit (lint staged + tsc + secret scan + trace
      validator) and commit-msg (trace trailers) via
      `git config core.hooksPath .githooks`. Verify they FIRE with a test
@@ -207,16 +210,19 @@ c. **Implement (green):** the **capability-implementer** subagent executes
 d. **Validation battery** + the slice's smoke test. Fix until green.
 
 e. **Review gate:** run workflow **`review-gate`** with
-   `args: { scope: "<slice name>", baseRef: "<git ref before slice>" }`.
+   `args: { scope: "<slice name>", change: "add-<cap>", baseRef: "<git ref before slice>" }`.
    It fans out code-reviewer, security-reviewer, and
    spec-compliance-auditor over the diff, adversarially verifies every
    finding, and returns confirmed issues. Fix ALL confirmed issues, re-run
-   the battery, re-run review-gate if fixes were substantial.
+   the battery, re-run review-gate if fixes were substantial. The final
+   (clean) run persists `openspec/changes/add-<cap>/review-findings.json` —
+   the evidence `check-trajectory` checks at archive (review ran, clean).
 
 f. **Archive:** `npx openspec archive add-<cap> --yes`, then
-   `npx openspec validate --all --strict` and
-   `node scripts/check-traceability.mjs` (catches unchecked archived tasks
-   and broken FR chains). Update `docs/current-state.md`. Commit with
+   `npx openspec validate --all --strict`,
+   `node scripts/check-traceability.mjs` (unchecked archived tasks, FR chains)
+   and `node scripts/check-trajectory.mjs` (review evidence clean, `Slice:`
+   trailer present, module scope). Update `docs/current-state.md`. Commit with
    trailers: `Slice: add-<capability>` + `Refs: <owned FR ids>`.
 
 **Gate G4 per slice** — a slice is DONE only when: tasks all ticked, battery
@@ -271,6 +277,11 @@ green, smoke passed, review findings fixed, change archived, handoff updated.
    .env hygiene), dependency audit (`npm audit`), error-surface audit (find
    any server action/route that can still throw raw on user input).
    Fix everything confirmed; re-run battery.
+1b. **Trajectory evals:** `node scripts/check-trajectory.mjs --release` (review
+   evidence clean per slice, `Slice:` trailers, module scope), then run the
+   `trajectory-eval` workflow over all archived slices — a fresh judge grades
+   the *path* (process-order, test-integrity, in-scope, craft). Review
+   `docs/qa/trajectory-eval-report.md`; address failing judgements.
 2. **Technical docs** (`docs/technical/`): architecture, data model,
    auth/access, workflows, APIs/actions, integrations, operations, testing.
    **Estimation** (`docs/estimation.md`) and a stakeholder delivery report

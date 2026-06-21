@@ -58,4 +58,10 @@ run("npx tsc --noEmit");
 run("node scripts/check-traceability.mjs");
 run('git add docs/qa/traceability-report.md trace/trace.json');
 
+// 5 — trajectory (process audit: review evidence, Slice: trailers, scope).
+// Warns only by default, so it won't block a commit; regenerates + stages its
+// report so CI --check-fresh stays green.
+run("node scripts/check-trajectory.mjs");
+run('git add docs/qa/trajectory-report.md trace/trajectory.json');
+
 console.log("pre-commit: all deterministic checks passed");

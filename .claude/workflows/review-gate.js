@@ -6,6 +6,7 @@ export const meta = {
     { title: 'Find', detail: 'parallel reviewers per dimension' },
     { title: 'Verify', detail: 'adversarial verification of each finding' },
     { title: 'Report', detail: 'confirmed findings summary' },
+    { title: 'Persist', detail: 'write per-slice review-findings.json (slice reviews only)' },
   ],
 }
 
@@ -113,10 +114,38 @@ const contested = verified.filter(Boolean).filter((f) => f.verdict === 'conteste
 const rejected = verified.filter(Boolean).filter((f) => f.verdict === 'rejected')
 log(`confirmed: ${confirmed.length}, contested: ${contested.length}, rejected: ${rejected.length}`)
 
+// Persist per-slice review evidence so check-trajectory can PROVE review ran
+// before archive (workflows can't touch fs — a writer agent persists it, same
+// pattern as eval-suite). Only for a slice review (scope/args.change names a
+// change folder); skipped for global / working-tree reviews.
+const change = args?.change ?? (typeof scope === 'string' && scope.startsWith('add-') ? scope : null)
+if (change) {
+  phase('Persist')
+  const dims = {}
+  for (const d of DIMENSIONS) dims[d.key] = { confirmed: 0, contested: 0, rejected: 0 }
+  for (const f of verified.filter(Boolean)) if (dims[f.dimension]) dims[f.dimension][f.verdict] += 1
+  const evidence = {
+    generatedBy: 'review-gate',
+    scope,
+    change,
+    baseRef: baseRef ?? null,
+    headRef,
+    dimensions: dims,
+    confirmedTitles: confirmed.map((f) => f.title),
+    clean: confirmed.length === 0,
+    generatedAt: 'WRITER_FILL_ISO_UTC',
+  }
+  await agent(
+    `Persist review evidence. Stamp the real current UTC time (ISO 8601, e.g. \`date -u +%Y-%m-%dT%H:%M:%SZ\`) where you see \`WRITER_FILL_ISO_UTC\`. Create parent dirs. Write EXACTLY this to \`openspec/changes/${change}/review-findings.json\` (byte-for-byte except the timestamp substitution):\n\n\`\`\`json\n${JSON.stringify(evidence, null, 2)}\n\`\`\`\n\nThis is committed as the slice's review evidence (check-trajectory requires \`clean:true\` before archive). Confirm the path written.`,
+    { label: `persist:${change}`, phase: 'Persist' },
+  )
+}
+
 return {
   scope,
   summary: `Review gate for ${scope}: ${confirmed.length} confirmed, ${contested.length} contested (treat as confirmed unless trivially wrong), ${rejected.length} rejected.`,
   confirmed,
   contested,
   rejected,
+  reviewEvidence: change ? `openspec/changes/${change}/review-findings.json` : null,
 }
