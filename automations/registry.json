@@ -1,0 +1,60 @@
+{
+  "$comment": "Single source of truth for scheduled automations. SHIPS OFF: `enabled` is false. Turn the whole layer on by setting it true; turn one automation on/off with its own `enabled`. Env AUTOMATIONS_ENABLED=0 hard-kills everything regardless. See automations/README.md.",
+  "enabled": false,
+  "defaults": {
+    "model": "claude-haiku-4-5-20251001",
+    "maxTokens": 20000,
+    "timeoutSec": 180,
+    "writeCode": false,
+    "output": ["report", "issue"]
+  },
+  "automations": [
+    {
+      "id": "drift-watch",
+      "enabled": true,
+      "tier": 0,
+      "schedule": "nightly",
+      "description": "Trace/coverage/eval freshness + OpenSpec/handoff hygiene. Deterministic; a cheap summary is added only when something is red.",
+      "run": "node scripts/automations/drift-watch.mjs",
+      "summarizeOnRed": true
+    },
+    {
+      "id": "dep-audit",
+      "enabled": true,
+      "tier": 0,
+      "schedule": "weekly",
+      "description": "npm audit + outdated check; a cheap summary of actionable highs only when there are findings.",
+      "run": "node scripts/automations/dep-audit.mjs",
+      "summarizeOnRed": true
+    },
+    {
+      "id": "ci-triage",
+      "enabled": true,
+      "tier": 1,
+      "schedule": "on-ci-failure",
+      "description": "On a red CI run, one cheap agent reads the failed log, hypothesizes a cause, and proposes a next step.",
+      "run": "node scripts/automations/ci-triage.mjs",
+      "budget": { "maxTokens": 15000 }
+    },
+    {
+      "id": "eval-drift",
+      "enabled": false,
+      "tier": 2,
+      "schedule": "weekly",
+      "description": "OPT-IN ($). Re-grade a sample of eval cases to catch quality drift the ratchet only sees on regeneration.",
+      "workflow": "eval-suite",
+      "args": { "casesGlob": "evals/cases/*.eval.ts", "sample": 5 },
+      "budget": { "maxTokens": 150000, "timeoutSec": 1200 }
+    },
+    {
+      "id": "bug-hunt",
+      "enabled": false,
+      "tier": 2,
+      "schedule": "manual",
+      "description": "OPT-IN ($$). Bounded review-gate sweep over a sampled slice; findings surface as tasks/issues only, never fixes.",
+      "workflow": "review-gate",
+      "args": { "scope": "sampled slice", "baseRef": "HEAD~50" },
+      "budget": { "maxTokens": 200000, "timeoutSec": 1800 }
+    }
+  ]
+}

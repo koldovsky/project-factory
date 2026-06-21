@@ -32,6 +32,10 @@ the UAT bug-triage round — including every lesson learned the hard way.
 - A built-in **UAT bug-triage loop** for when the customer's QA report
   arrives: bug→requirement mapping, verdicts, root-cause fixes, regression
   tests, and bug-fix proof recordings.
+- **Optional standing automations**: cost-tiered, off-by-default scheduled
+  watchers (trace/coverage/eval drift, CI-failure triage, dependency audit)
+  that propose findings as reports/issues and **never auto-fix** — runnable
+  locally or in the cloud, with a one-flag master switch.
 
 ## How to use it
 
@@ -70,6 +74,7 @@ the UAT bug-triage round — including every lesson learned the hard way.
 | `templates/ci/` | GitHub Actions workflow: full battery + trace freshness + coverage ratchet + evidence artifacts |
 | `scripts/*.reference.*` | Proven reference implementations: verification runner, demo recorder, UAT proof recorder, **traceability validator**, **coverage ratchet**, **eval ratchet** |
 | `evals/` | Graded-quality eval cases (`cases/*.eval.ts`) + suite README — the bar recordings illustrate |
+| `automations/` + `scripts/automations/` | Optional scheduled watchers (drift / CI-triage / dependency audit) — cost-tiered, propose-only, OFF by default; local + cloud adapters |
 
 ## The two enforcement pillars
 

@@ -34,7 +34,7 @@ customer. Prompts *ask* for quality; loops *guarantee* it.
 
 | Loop-engineering primitive | This framework |
 |---|---|
-| Automations | CI on every push; `qa:verify` battery as the gate runner; recorder scripts regenerate evidence on demand |
+| Automations | CI on every push; `qa:verify` battery as the gate runner; recorder scripts regenerate evidence on demand; **plus an optional scheduled-automations layer** (`automations/` — cost-tiered, propose-only, off by default: drift / CI-triage / audit watchers, local or cloud) |
 | Worktrees | Parallel slice implementation policy (independent DAG branches, isolated worktrees) |
 | Skills | `AGENTS.md` rules + `.agents/skills/` packs + the templates — codified once, never re-explained |
 | Connectors | `gh`, deploy platform CLI, DB tooling — the loop ends with a verified deployment, not a claim |

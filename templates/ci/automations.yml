@@ -1,0 +1,106 @@
+# Automations (cloud adapter) — scheduled, propose-only jobs.
+# Copy to .github/workflows/automations.yml. Sibling to ci.yml.
+#
+# OFF until you set the repository VARIABLE AUTOMATIONS_ENABLED=1
+# (Settings → Secrets and variables → Actions → Variables). That one switch
+# gates every job here AND flips the dispatcher's master switch on.
+# Tier-0 jobs spend nothing; Tier-1 triage needs the ANTHROPIC_API_KEY secret.
+name: automations
+
+on:
+  schedule:
+    - cron: "0 3 * * *" # nightly 03:00 UTC
+    - cron: "0 4 * * 1" # weekly Monday 04:00 UTC
+  workflow_dispatch:
+    inputs:
+      schedule:
+        description: which cadence to run manually
+        type: choice
+        options: [nightly, weekly]
+        default: nightly
+  workflow_run:
+    workflows: [ci] # triage ci.yml when it fails
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write # for `gh issue create`
+
+jobs:
+  nightly:
+    if: ${{ vars.AUTOMATIONS_ENABLED == '1' && (github.event.schedule == '0 3 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.schedule == 'nightly')) }}
+    runs-on: ubuntu-latest
+    env:
+      AUTOMATIONS_ENABLED: "1"
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run nightly automations (propose-only)
+        run: node scripts/automations/run.mjs --all-due --schedule nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: automation-reports-nightly
+          path: docs/automations/
+          if-no-files-found: ignore
+      # To COMMIT the reports back instead of just uploading them, grant
+      # `contents: write` above and uncomment:
+      # - run: |
+      #     git config user.name "automations[bot]"
+      #     git config user.email "automations@users.noreply.github.com"
+      #     git add docs/automations && git commit -m "chore(automations): nightly [skip ci]" && git push || echo "nothing to commit"
+
+  weekly:
+    if: ${{ vars.AUTOMATIONS_ENABLED == '1' && (github.event.schedule == '0 4 * * 1' || (github.event_name == 'workflow_dispatch' && github.event.inputs.schedule == 'weekly')) }}
+    runs-on: ubuntu-latest
+    env:
+      AUTOMATIONS_ENABLED: "1"
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run weekly automations (propose-only)
+        run: node scripts/automations/run.mjs --all-due --schedule weekly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: automation-reports-weekly
+          path: docs/automations/
+          if-no-files-found: ignore
+
+  ci-triage:
+    if: ${{ vars.AUTOMATIONS_ENABLED == '1' && github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    env:
+      AUTOMATIONS_ENABLED: "1"
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CI_LOG_PATH: ci-failure.log
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Fetch the failed CI logs
+        run: gh run view ${{ github.event.workflow_run.id }} --log-failed > ci-failure.log || true
+      - name: Triage the failure (cheap model → issue)
+        run: node scripts/automations/run.mjs ci-triage
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: automation-reports-ci-triage
+          path: docs/automations/
+          if-no-files-found: ignore

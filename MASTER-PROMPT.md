@@ -102,6 +102,13 @@ playbook assigns them. The user has opted into multi-agent orchestration.
    - CI: copy `templates/ci/github-actions.yml` to
      `.github/workflows/ci.yml` (battery + trace `--check-fresh` +
      `--release` hygiene + coverage ratchet + evidence artifacts).
+   - Automations (optional, ships OFF): copy `scripts/automations/` and
+     `automations/registry.json`. For cloud, copy
+     `templates/ci/automations.yml` to `.github/workflows/` (gated by repo
+     var `AUTOMATIONS_ENABLED`); for local, see
+     `templates/automations/local-setup.md`. Cost-tiered, propose-only
+     watchers; master switch stays OFF until the user opts in. See
+     `automations/README.md`.
    - Vitest coverage reporter `json-summary` enabled; create the coverage
      baseline after the first slice (`node scripts/check-coverage-ratchet.mjs --update`).
 6. **Env:** create `.env.example` documenting every variable with comments
