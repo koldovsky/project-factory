@@ -16,7 +16,7 @@ the UAT bug-triage round — including every lesson learned the hard way.
 - OpenSpec baseline specs per capability, strictly validated.
 - A dependency-ordered capability plan with one owner per requirement.
 - Implemented capabilities, each through a gated loop:
-  spec → design → tasks → implement → tests → review gates → archive.
+  spec → design → tasks → tests(red) → implement(green) → review gates → archive.
 - Four test layers: unit, DB integration, Playwright E2E, production build.
 - Multi-dimensional adversarial review gates (correctness, security,
   spec-compliance, best practices) on every slice and once globally.

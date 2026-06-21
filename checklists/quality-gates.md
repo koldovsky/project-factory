@@ -64,6 +64,9 @@ node scripts/check-traceability.mjs        # ticked tasks, FR chain, @trace cove
 
 - [ ] Change folder validated strictly before implementation started.
 - [ ] All tasks.md checkboxes ticked, truthfully (validator enforces after archive).
+- [ ] Tests written FIRST from the spec and observed to FAIL (red), then made to
+      pass (green) by implementation — authored before the implementer ran; no
+      test weakened to go green.
 - [ ] Unit tests added for all new pure domain logic (incl. locale/edge
       inputs), each annotated `@trace FR-x`.
 - [ ] Eval case(s) authored for the slice's key error-surface / qualitative

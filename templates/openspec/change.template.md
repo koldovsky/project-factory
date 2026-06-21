@@ -52,28 +52,29 @@
 - [ ] 1.3 Indexes/constraints/FKs …
 - [ ] 1.4 Export from `db/schema/index.ts`; generate + commit migration.
 
-## 2. Domain logic
-- [ ] 2.1 `lib/<domain>/validation.ts` zod schemas + formData mappers.
-- [ ] 2.2 {{pure helpers: calculations, state machine, parsers}}
+## 2. Failing tests first (red) — written from the spec, before implementation
+- [ ] 2.1 Unit: validation incl. locale decimals, trailing zeros, oversized,
+        blank inputs. Each `@trace FR-x`.
+- [ ] 2.2 Unit: {{calculations / state machine / parsers}}; boundary values.
+- [ ] 2.3 DB smoke-flow skeleton asserting the slice's persisted outcomes.
+- [ ] 2.4 Eval case(s) in `evals/cases/<domain>.eval.ts` for the slice's key
+        error-surface / qualitative NFR behavior (rubric + `@trace` the NFR/FR).
+- [ ] 2.5 Run them — confirm RED (failing on assertions, not import errors).
 
-## 3. Services and actions
-- [ ] 3.1 `lib/<domain>/queries.ts` (guarded reads).
-- [ ] 3.2 `lib/<domain>/service.ts` (business operations).
-- [ ] 3.3 `lib/<domain>/actions.ts` (guard → validate → service →
+## 3. Domain logic (green) — implement until §2 unit tests pass
+- [ ] 3.1 `lib/<domain>/validation.ts` zod schemas + formData mappers.
+- [ ] 3.2 {{pure helpers: calculations, state machine, parsers}}
+
+## 4. Services and actions (green)
+- [ ] 4.1 `lib/<domain>/queries.ts` (guarded reads).
+- [ ] 4.2 `lib/<domain>/service.ts` (business operations) — §2.3 smoke flow now passes.
+- [ ] 4.3 `lib/<domain>/actions.ts` (guard → validate → service →
         revalidate; errors surfaced inline, never raw 500).
 
-## 4. UI and route handlers
-- [ ] 4.1 {{pages/forms; filter+edit forms keyed by server state}}
-- [ ] 4.2 Unauthorized → `/login?next=…`; forbidden → `/`.
-- [ ] 4.3 Navigation entries in the shared shell.
-
-## 5. Tests
-- [ ] 5.1 Unit: validation incl. locale decimals, trailing zeros, oversized,
-        blank inputs.
-- [ ] 5.2 Unit: {{calculations / state machine / parsers}}.
-- [ ] 5.3 DB smoke flow script for this slice.
-- [ ] 5.4 Eval case(s) in `evals/cases/<domain>.eval.ts` for the slice's key
-        error-surface / qualitative NFR behavior (rubric + `@trace` the NFR/FR).
+## 5. UI and route handlers
+- [ ] 5.1 {{pages/forms; filter+edit forms keyed by server state}}
+- [ ] 5.2 Unauthorized → `/login?next=…`; forbidden → `/`.
+- [ ] 5.3 Navigation entries in the shared shell.
 
 ## 6. Validation, docs, and archive prep
 - [ ] 6.1 `npm run test:run`

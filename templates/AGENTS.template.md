@@ -52,6 +52,12 @@ of truth — if it conflicts with code/specs/tests, verify and update it.
 - Seed/test helpers re-pin baseline state; day-bound test assertions use
   LOCAL calendar dates.
 
+## Test-first (per slice)
+
+Write the slice's unit tests + DB smoke flow from the spec FIRST and confirm they
+FAIL (red); then implement to green. Never weaken a test to pass it — if a test
+contradicts the spec, change it deliberately, not silently.
+
 ## Validation cadence
 
 Run before and after substantial changes:

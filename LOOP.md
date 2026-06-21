@@ -18,7 +18,7 @@ customer. Prompts *ask* for quality; loops *guarantee* it.
 │  → regression test → proof recording → customer report           │
 │                                                                   │
 │  ┌─ SLICE LOOP — per capability ────────────────────────────┐    │
-│  │  spec → tasks → implement → tests → BATTERY (commands)   │    │
+│  │  spec → tasks → tests(red) → implement(green) → BATTERY  │    │
 │  │  → review-gate (maker≠checker) → fix → archive → commit  │    │
 │  │                                                           │    │
 │  │  ┌─ INNER LOOP — per edit ─────────────────────────┐     │    │

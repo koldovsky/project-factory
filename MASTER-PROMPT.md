@@ -177,28 +177,32 @@ default is sequential — DB migrations conflict):
 
 a. **Spec change:** spec-writer creates `openspec/changes/add-<cap>/` with
    `proposal.md`, `design.md`, `tasks.md` (template provided; tasks are
-   numbered checkboxes in sections: schema → domain logic → services/actions
-   → UI → tests → validation/docs/archive; the FINAL section always contains
-   the validation battery + real-DB smoke test + archive command). Move the
+   numbered checkboxes in sections: schema → failing tests (red) → domain
+   logic + services/actions (green) → UI → validation/docs/archive; the FINAL
+   section always contains the validation battery + real-DB smoke test +
+   archive command). Move the
    baseline spec content into the change as `## ADDED Requirements`
    (OpenSpec "Option B"). `npx openspec validate add-<cap> --strict`.
 
-b. **Implement:** the **capability-implementer** subagent executes tasks.md
-   top to bottom, ticking checkboxes, following the module conventions in
-   `AGENTS.md` (one `lib/<domain>/` module: validation.ts (zod) + queries.ts
-   + service.ts + actions.ts + *.test.ts; `db/schema/<domain>.ts`; pages thin).
-   First slice also establishes: auth guards, the inline form-error pattern,
-   the shared authenticated shell with ONE role-based navigation source.
+b. **Tests first (red):** the **test-engineer** subagent writes, FROM THE SPEC
+   and before the implementation exists, unit tests for every pure domain
+   function (validation, calculations, state machines, parsers — including
+   locale/edge inputs: decimal commas, trailing zeros, oversized values, blank
+   submissions) and the slice's real-DB smoke-flow skeleton. It runs them: they
+   MUST fail (red) for the right reason — asserting the specified behavior, not
+   ratifying code that doesn't exist yet. Every test file carries `@trace FR-x`
+   annotations (`node scripts/check-traceability.mjs` reports gaps). It also
+   authors 1–3 eval cases (`evals/cases/<domain>.eval.ts`) for the slice's key
+   error-surface / qualitative-NFR behavior (graded in Phase 6).
 
-c. **Tests:** the **test-engineer** subagent adds unit tests for every pure
-   domain function (validation, calculations, state machines, parsers —
-   including locale/edge inputs: decimal commas, trailing zeros, oversized
-   values, blank submissions) and a real-DB smoke flow script for the slice.
-   Every test file carries `@trace FR-x` annotations for the FRs it covers —
-   `node scripts/check-traceability.mjs` reports the gaps. It also authors 1–3
-   eval cases (`evals/cases/<domain>.eval.ts`) for the slice's key error-surface
-   / qualitative-NFR behavior — rubric + `@trace` — so the graded-quality bar
-   covers this slice (graded in Phase 6).
+c. **Implement (green):** the **capability-implementer** subagent executes
+   tasks.md top to bottom, ticking checkboxes, following the module conventions
+   in `AGENTS.md` (one `lib/<domain>/` module: validation.ts (zod) + queries.ts
+   + service.ts + actions.ts; `db/schema/<domain>.ts`; pages thin) until the red
+   tests from (b) pass (green) — without weakening a test (if a test contradicts
+   the spec, flag it, don't silently edit it). First slice also establishes:
+   auth guards, the inline form-error pattern, the shared authenticated shell
+   with ONE role-based navigation source.
 
 d. **Validation battery** + the slice's smoke test. Fix until green.
 

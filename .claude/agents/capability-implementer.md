@@ -15,8 +15,11 @@ design.md decides HOW, tasks.md decides WHAT and in what order.
    move faster than your training data — verify APIs before using them).
 2. Execute tasks.md top to bottom. Tick each checkbox (`- [x]`) as you
    complete it. Do not skip, reorder silently, or batch-tick.
-3. Stop at the Tests section — the test-engineer agent owns it — unless the
-   orchestrator told you to do both.
+3. The slice's unit tests + smoke flow are ALREADY written and failing (red) —
+   the test-engineer authored them from the spec before you. Your job is to make
+   them pass (green). NEVER weaken, skip, or delete a test to go green; if a test
+   genuinely contradicts the spec, flag it to the orchestrator instead of editing
+   it. You own the implementation tasks, not the test files.
 
 ## Module conventions (non-negotiable)
 
@@ -55,6 +58,7 @@ design.md decides HOW, tasks.md decides WHAT and in what order.
 
 ## Definition of done (your part)
 
-All non-test tasks ticked; `npm run lint` and `npm run build` pass; the
-feature works in a manual happy-path check; you report exactly what you
-implemented, what you deviated on (and why), and what remains.
+All implementation tasks ticked; the slice's previously-red tests now pass
+(`npm run test:run`) with none weakened; `npm run lint` and `npm run build`
+pass; the feature works in a manual happy-path check; you report exactly what
+you implemented, what you deviated on (and why), and what remains.
