@@ -81,6 +81,20 @@ GitHub issue; otherwise it appends to `docs/automations/INBOX.md`.
 **scheduler trigger** decides cadence (so the same registry works on an
 ephemeral cloud runner with no state file).
 
+## Connectors (issue tracker / chat)
+
+Findings reach you through connectors — the loop-engineering "connectors"
+primitive applied to ongoing ops, not just deployment. Choose per automation via
+its `output` list:
+
+- **report** (always) — `docs/automations/<id>-<date>.md`, committed evidence.
+- **issue** — a GitHub issue via `gh` (degrades to `INBOX.md` when `gh` is absent).
+- **notify** — a one-line status POSTed to a Slack-compatible webhook
+  (`AUTOMATIONS_WEBHOOK_URL`). Best-effort, opt-in, dependency-free.
+- **more** (Slack/Linear/Jira MCP) — add a branch to
+  `scripts/automations/lib/surface.mjs` keyed off `output`; UAT triage can reuse
+  the same path to file/notify.
+
 ## Add an automation
 
 - **Deterministic (Tier 0):** add a `scripts/automations/<id>.mjs` that runs

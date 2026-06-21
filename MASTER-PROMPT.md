@@ -46,6 +46,13 @@ playbook assigns them. The user has opted into multi-agent orchestration.
   stack's equivalent) in the FIRST capability and reuse it everywhere.
 - **Ask only at checkpoints.** Phases 1 and 3 each end with a user approval.
   Everything else is autonomous; batch questions, don't dribble them.
+- **Model & effort tiers (cost discipline).** Match model/effort to the job:
+  cheap + low effort for mechanical work (scaffolding, doc generation, the
+  qa-documenter, drift-watch, the collect/writer steps in workflows); the
+  strongest model + high effort for hard verification and judgment (review-gate
+  reviewers, security, eval-judge, trajectory-eval, uat-triage). Workflows accept
+  per-agent `model`/`effort` overrides — set them per stage. Don't pay top-tier
+  rates for boilerplate; don't cut corners on the checkers.
 - **Track work** with the task tools: one task per phase, one per slice.
 
 ---
@@ -66,6 +73,11 @@ playbook assigns them. The user has opted into multi-agent orchestration.
    - Write `AGENTS.md` from `project-factory/templates/AGENTS.template.md`
      (fill project name, stack versions) and `CLAUDE.md` containing
      `@AGENTS.md`.
+   - Write `docs/context-architecture.md` from the template: declare the static
+     layer (lean `AGENTS.md` core, paid every turn) vs the dynamic layer (skills,
+     per-domain specs/code, bundled docs loaded on demand) with a static-context
+     token budget; record it as ADR-0002. Keep `AGENTS.md` within budget — demote
+     detail to skills/domain docs when it grows, never silently raise the budget.
    - IMPORTANT: read the installed framework's bundled docs
      (`node_modules/next/dist/docs/` for Next.js) before writing code —
      versions move faster than training data.
@@ -174,9 +186,12 @@ the long autonomous build). **Gate G3** → commit `capability plan`.
 
 ## Phase 4 — Per-slice delivery loop (the core)
 
-For each slice in dependency order (run independent DAG branches as parallel
-implementer subagents in worktrees ONLY if the user asked for maximum speed;
-default is sequential — DB migrations conflict):
+For each slice in dependency order. **Parallelize by default where safe:** run
+independent DAG branches as parallel implementer subagents in isolated git
+worktrees when their slices touch DISJOINT modules and don't both change the DB
+schema/migrations. **Serialize** slices that touch migrations or a shared module
+— DB migrations conflict. The capability plan marks each slice parallel-safe or
+must-serialize; honor it, and re-run the battery after merging a parallel branch.
 
 a. **Spec change:** spec-writer creates `openspec/changes/add-<cap>/` with
    `proposal.md`, `design.md`, `tasks.md` (template provided; tasks are

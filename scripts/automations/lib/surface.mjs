@@ -33,14 +33,14 @@ function renderReport(resolved, result, isoDate) {
 }
 
 // resolved: the merged automation config (id, tier, output[]). result: findings payload.
-export function surface(root, resolved, result, opts = {}) {
+export async function surface(root, resolved, result, opts = {}) {
   const isoDate = opts.date ?? new Date().toISOString();
   const day = isoDate.slice(0, 10);
   mkdirSync(join(root, OUT_DIR), { recursive: true });
 
   const reportRel = join(OUT_DIR, `${resolved.id}-${day}.md`).replaceAll("\\", "/");
   writeFileSync(join(root, reportRel), renderReport(resolved, result, isoDate));
-  const out = { report: reportRel, issue: null, inbox: null };
+  const out = { report: reportRel, issue: null, inbox: null, notified: null };
 
   const wantIssue = (resolved.output ?? []).includes("issue") && actionable(result);
   if (wantIssue) {
@@ -62,7 +62,28 @@ export function surface(root, resolved, result, opts = {}) {
       out.inbox = appendInbox(root, day, resolved, reportRel, opts.noGh ? "issue surfacing suppressed" : "gh not available");
     }
   }
+  // Connector: post a one-line status to a Slack-compatible webhook when the
+  // automation requests "notify" and AUTOMATIONS_WEBHOOK_URL is set. Best-effort
+  // and opt-in — the loop-engineering "connectors" primitive for ongoing ops.
+  if ((resolved.output ?? []).includes("notify") && actionable(result) && process.env.AUTOMATIONS_WEBHOOK_URL && !opts.noNotify) {
+    out.notified = await postWebhook(process.env.AUTOMATIONS_WEBHOOK_URL, resolved, result, reportRel);
+  }
   return out;
+}
+
+async function postWebhook(url, resolved, result, reportRel) {
+  const top = (result.findings ?? [])
+    .filter((f) => LEVEL_RANK[f.level] >= 1)
+    .slice(0, 5)
+    .map((f) => `• ${f.level} ${f.check}`)
+    .join("\n");
+  const text = `*[automation:${resolved.id}]* ${result.red ? "RED" : "findings"} — ${reportRel}\n${top}`;
+  try {
+    const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ text }) });
+    return res.ok ? "sent" : `failed (${res.status})`;
+  } catch {
+    return "failed (network)";
+  }
 }
 
 function appendInbox(root, day, resolved, reportRel, why) {

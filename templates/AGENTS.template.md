@@ -27,6 +27,14 @@ an ADR is accepted. Write last update date/time (timezone: {{TIMEZONE}}) and
 the current phase. `docs/current-state.md` is a handoff aid, not the source
 of truth — if it conflicts with code/specs/tests, verify and update it.
 
+## Context architecture (static vs dynamic)
+
+This file is **static context** — paid for on every agent turn — so keep it to
+durable cross-cutting rules. Per-domain detail, procedures, and large references
+are **dynamic**: loaded on demand from the code, the spec, an on-demand skill, or
+the framework's bundled docs. See `docs/context-architecture.md` for the split,
+the token budget, and what to demote when this file grows past it.
+
 ## Module conventions
 
 - `db/schema/<domain>.ts` per domain, re-exported from `db/schema/index.ts`;

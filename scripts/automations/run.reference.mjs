@@ -105,7 +105,7 @@ async function runOne(reg, a) {
     result = { id: a.id, ok: false, red: true, findings: [{ level: "red", check: "config", detail: "no run or workflow" }] };
   }
 
-  const out = surface(root, r, result, { noGh: hasFlag("--no-gh") });
+  const out = await surface(root, r, result, { noGh: hasFlag("--no-gh") });
   console.log(`  → report ${out.report}${out.issue ? `  issue ${out.issue}` : out.inbox ? `  inbox ${out.inbox}` : ""}`);
   return Boolean(result.red);
 }

@@ -21,10 +21,14 @@ implementation → tests → review gate → archive).
 
 ## 2. The capability changes
 
-| # | Change name | Baseline specs touched | MVP FRs | NFRs travelled | Depends on |
-|---|---|---|---|---|---|
-| 1 | `add-identity-and-access` | … | … | … | — |
-| 2 | … | … | … | … | 1 |
+| # | Change name | Baseline specs touched | MVP FRs | NFRs travelled | Depends on | Parallel |
+|---|---|---|---|---|---|---|
+| 1 | `add-identity-and-access` | … | … | … | — | serialize (migrations) |
+| 2 | … | … | … | … | 1 | parallel-safe (disjoint modules) |
+
+**Parallel** = `parallel-safe` (disjoint modules, no shared migration → may run
+concurrently in a worktree) or `serialize` (touches migrations or a shared
+module). Default to parallel-safe only when you can prove the disjointness.
 
 **Cross-cutting NFRs every change MUST honor:** {{list NFR ids + summary}}.
 
@@ -35,7 +39,9 @@ flowchart LR
     a["1. add-…"] --> b["2. add-…"]
 ```
 
-**Critical path:** {{…}}. **Parallelizable:** {{which slices, after what}}.
+**Critical path:** {{…}}. **Parallelizable:** {{which `parallel-safe` slices run
+concurrently in isolated worktrees, after what}} — disjoint modules, no shared
+migration. Everything touching migrations or a shared module stays serialized.
 
 ## 4. Per-change scope and exit criteria
 

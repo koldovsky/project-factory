@@ -37,10 +37,20 @@ customer. Prompts *ask* for quality; loops *guarantee* it.
 | Automations | CI on every push; `qa:verify` battery as the gate runner; recorder scripts regenerate evidence on demand; **plus an optional scheduled-automations layer** (`automations/` — cost-tiered, propose-only, off by default: drift / CI-triage / audit watchers, local or cloud) |
 | Worktrees | Parallel slice implementation policy (independent DAG branches, isolated worktrees) |
 | Skills | `AGENTS.md` rules + `.agents/skills/` packs + the templates — codified once, never re-explained |
-| Connectors | `gh`, deploy platform CLI, DB tooling — the loop ends with a verified deployment, not a claim |
+| Connectors | `gh`, deploy platform CLI, DB tooling — the loop ends with a verified deployment, not a claim; **automations also surface through connectors** (GitHub issues, a Slack-compatible webhook, or an MCP connector) so ongoing ops act, not just report |
 | Sub-agents (maker ≠ checker) | The implementer of a slice NEVER reviews it. `review-gate` spawns fresh reviewer agents per dimension, and each finding is adversarially verified by further fresh agents. `uat-triage` gets a second independent opinion on low-confidence verdicts |
 | State / memory | `docs/current-state.md` (handoff), `trace/trace.json` (machine-readable links), OpenSpec archives (decision history) — *"the agent forgets, the repo doesn't"* |
 | Verifiable stop conditions | Gates G0–G8 are **commands with exit codes**, not prose. "Done" = the gate's command set exits 0 |
+
+## Conductor vs orchestrator mode
+
+This framework runs in **orchestrator mode** — asynchronous, goal-driven: hand
+it a spec and it drives slices to done through the gates. That is the right mode
+for building *to a known spec*. When the code or domain is *unknown* and you must
+explore before specifying, drop into **conductor mode** first (real-time, in the
+IDE, small reversible steps) to build understanding — then write the spec and let
+the orchestrator take over. The modes compose; don't orchestrate over a codebase
+you haven't yet understood.
 
 ## The two hard rules this adds
 

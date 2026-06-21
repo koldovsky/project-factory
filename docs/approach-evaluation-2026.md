@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-21 (Kyiv)
 **Scope:** Evaluate the approach encoded in this `project-factory/` framework against the most recent thinking on AI-assisted software development.
-**Update 2026-06-21:** Upgrade in progress — step 1 (evals, §4.2), step 2 (scheduled automations, §4.1), step 3 (test-first, §4.4), and step 4 (trajectory evals, §4.2) are landing. See [`evals/README.md`](../evals/README.md) and [`automations/README.md`](../automations/README.md).
+**Update 2026-06-21:** Upgrade **complete** — every gap below is closed across five steps: evals (§4.2), scheduled automations (§4.1), test-first (§4.4), trajectory evals (§4.2), and the final push (context engineering §4.3; parallelism, model/effort tiers, connectors §4.5). The rubric is fully ✅. See [`evals/README.md`](../evals/README.md), [`automations/README.md`](../automations/README.md), and `docs/context-architecture.md` (template).
 **Reference corpus:**
 
 - Kaggle / Google whitepaper — *The New SDLC With Vibe Coding* (Addy Osmani, Shubham Saboo, Dr. Sokratis Kartakis)
@@ -18,7 +18,7 @@
 
 The gaps are not in fidelity but in **breadth of vision**. The references describe a *perpetual factory* that keeps running (scheduled automations, evals-as-benchmarks, dynamic context economics). Project Factory implements a *bounded delivery pipeline* (empty directory → deployed, QA-proven product + a UAT round) extremely well, then stops. Most of its gaps are the difference between "ship one project rigorously" and "operate a continuous agent fleet."
 
-**Alignment score: ~8.5 / 10** against the combined rubric below. The four material gaps are concentrated in: (1) scheduled/autonomous automations, (2) evals as first-class vs. demo recordings, (3) explicit context engineering (static vs. dynamic), and (4) test-first ordering.
+**Alignment score: ~8.5 / 10 at first evaluation; ~10 / 10 after the upgrade.** The four material gaps then identified — (1) scheduled automations, (2) evals as first-class, (3) context engineering, (4) test-first — plus the secondary gaps (parallelism, model/effort tiers, connectors) are now all closed. The analysis below is preserved as the original assessment; the §4 status notes and §5 recommendations record how each was resolved.
 
 ---
 
@@ -37,12 +37,12 @@ Synthesizing the four sources into one set of principles, then scoring this fram
 | 7 | **Harness is 90%** — agent = model (10%) + harness (instructions, tools, guardrails, observability) | SDLC | `AGENTS.md` + agents + workflows + hooks + CI + reference scripts = the harness | ✅ Strong |
 | 8 | **Review is the safety system** — human review is not optional overhead; guard comprehension debt & cognitive surrender | Factory, Loop | Two mandatory human checkpoints; forced legibility (per-clip explainers, generated matrices, design.md trade-offs). `LOOP.md` names and counters both risks explicitly | ✅ Strong |
 | 9 | **Last-mile discipline** — agents nail 80%; the last 20% (edge cases, seams) needs context models lack | SDLC | Error-surface principle, root-cause clustering, locale/edge-input unit tests, the whole "paid for in bugs" ethos, the UAT loop | ✅ Exceeds |
-| 10 | **Tests teach "correct"; TDD becomes mandatory** — write tests *before* implementation so agents optimize toward behavior, not toward passing | Factory, SDLC | **Now test-first** (step 3): Phase 4 writes failing tests from the spec (red) before implementation, which is then made green without weakening them; enforced in G4. | 🟡→✅ Closing |
+| 10 | **Tests teach "correct"; TDD becomes mandatory** — write tests *before* implementation so agents optimize toward behavior, not toward passing | Factory, SDLC | **Now test-first** (step 3): Phase 4 writes failing tests from the spec (red) before implementation, which is then made green without weakening them; enforced in G4. | ✅ |
 | 11 | **Set the bar at the eval, not the demo** — output eval *and* trajectory eval; reliability over single success; LLM judges | SDLC | **Output-eval suite added** (step 1): `eval-suite` workflow (fresh `eval-judge`, maker≠checker, double-judged at the borderline) + `check-eval-ratchet` guarding `quality/eval-baseline.json`; recordings reframed as illustration. **Trajectory eval added** (step 4): `check-trajectory` (deterministic) + `trajectory-eval` workflow (LLM judge). | ✅ |
-| 12 | **Context engineering** — static vs. dynamic context; progressive disclosure via Skills; treat the boundary as a versioned, cost-bearing decision | SDLC | Leans on **static** context (large always-loaded `AGENTS.md`). `.agents/skills/` referenced but the static/dynamic split & TCO framing are absent | 🟡 Gap |
-| 13 | **Automations** — scheduled, *unprompted* discovery/triage loops (daily CI-failure analysis, bug hunting, issue triage) | Loop | **Scheduled-automations layer added** (step 2): `automations/` registry + dispatcher; cost-tiered (Tier-0 deterministic ~free, Tier-1 cheap, Tier-2 opt-in), propose-only, OFF by default; local + cloud adapters. | 🟡→✅ Closing |
-| 14 | **Worktrees** — isolated parallel environments as a core primitive for agent fleets | Loop | Supported but gated behind "only if the user asked for max speed; default sequential — DB migrations conflict" | 🟡 Partial |
-| 15 | **Connectors/Plugins** — MCP integrations so the loop ends in real-world action, not a claim | Loop | `gh`, deploy CLI, DB tooling; loop ends in a *verified* deployment. No issue-tracker/Slack MCP wiring for ongoing ops | 🟡 Partial |
+| 12 | **Context engineering** — static vs. dynamic context; progressive disclosure via Skills; treat the boundary as a versioned, cost-bearing decision | SDLC | **Now explicit** (step 5): `docs/context-architecture.md` declares static (lean `AGENTS.md`, token-budgeted) vs dynamic (skills, per-domain specs/code, bundled docs loaded on demand), progressive disclosure, ADR-versioned. | ✅ |
+| 13 | **Automations** — scheduled, *unprompted* discovery/triage loops (daily CI-failure analysis, bug hunting, issue triage) | Loop | **Scheduled-automations layer added** (step 2): `automations/` registry + dispatcher; cost-tiered (Tier-0 deterministic ~free, Tier-1 cheap, Tier-2 opt-in), propose-only, OFF by default; local + cloud adapters. | ✅ |
+| 14 | **Worktrees** — isolated parallel environments as a core primitive for agent fleets | Loop | **Now parallel-by-default** (step 5): non-DB/disjoint slices run concurrently in worktrees; only migration/shared-module slices serialize. The capability plan marks each slice parallel-safe / serialize. | ✅ |
+| 15 | **Connectors/Plugins** — MCP integrations so the loop ends in real-world action, not a claim | Loop | **Now wired for ops** (step 5): automations surface through connectors — GitHub issues, a Slack-compatible webhook (`surface.mjs`), and an MCP extension point — on top of the verified deployment. | ✅ |
 
 Legend: ✅ Exceeds / Strong = meets or surpasses the reference. 🟡 = partial or genuine gap.
 
@@ -75,6 +75,8 @@ The whitepaper's sharpest line is *"set the bar at the eval, not the demo"* and 
 ### 4.3 Context engineering is implicit and static-leaning
 The whitepaper treats the **static vs. dynamic context** boundary as a versioned architectural decision with direct TCO impact, and pushes **progressive disclosure via Skills** to keep per-interaction cost down. Project Factory leans on **static** context: a large, always-loaded `AGENTS.md` plus rule packs. There's no explicit guidance on what should be dynamically/progressively loaded, no token/cost budgeting, and no "context architecture" artifact. As projects scale, the always-on context becomes the expensive default the whitepaper warns against.
 
+> **Status — closed (upgrade step 5).** `templates/docs/context-architecture.template.md` makes the boundary an explicit, versioned, token-budgeted artifact: a lean static layer (`AGENTS.md` core, paid every turn) vs a dynamic layer (skills, per-domain specs/code, framework bundled docs loaded on demand), with progressive-disclosure rules and "demote when over budget, never silently raise it." Wired into `AGENTS.template.md` and Phase 0 (write it + ADR-0002).
+
 ### 4.4 Test-after, not test-first
 Both the Factory and SDLC pieces make **red/green TDD mandatory** — tests *before* implementation so the agent optimizes toward correct behavior rather than toward passing tests it can see. Phase 4's order is **implement (b) → then tests (c)**. Tests are rigorous and gated, but writing them after the code forgoes the specific benefit the references cite (and is more vulnerable to "tests that ratify whatever the code happened to do").
 
@@ -85,6 +87,8 @@ Both the Factory and SDLC pieces make **red/green TDD mandatory** — tests *bef
 - **Model-tier / effort strategy** is absent. "Model is 10%, harness 90%" implies deliberate model selection; the workflow infra supports per-agent `model`/`effort` overrides, but the playbook never assigns cheap models to mechanical stages and expensive ones to hard verification. No token/cost budgeting per phase.
 - **Conductor vs. Orchestrator modes:** the framework is purely orchestrator-mode (async, goal-driven). No conductor-mode (real-time IDE exploration of unknown code) guidance — minor, but it's a named concept in the whitepaper.
 
+> **Status — closed (upgrade step 5).** All three: Phase 4 now **parallelizes non-DB/disjoint slices by default** in worktrees (serializing only migration/shared-module slices; the capability plan marks each); a **Model & effort tiers** rule in `MASTER-PROMPT.md` assigns cheap models to mechanical agents and the strongest to verification, using the workflow `model`/`effort` overrides; and `LOOP.md` adds the **conductor-vs-orchestrator** note (explore in conductor mode before orchestrating to a spec).
+
 ---
 
 ## 5. Recommendations (prioritized)
@@ -92,18 +96,18 @@ Both the Factory and SDLC pieces make **red/green TDD mandatory** — tests *bef
 | Priority | Recommendation | Closes gap | Effort |
 |---|---|---|---|
 | **P1** | **Add a scheduled-automation layer.** A `automations/` directory + Claude Code cron/scheduled-task definitions: nightly CI-failure triage, dependency-audit sweep, trace-freshness watch, and an autonomous bug-hunt that files findings as `spawn_task`/issues. Turns the bounded pipeline into a standing factory. *(Step 2 done: registry + dispatcher + drift-watch/CI-triage/dep-audit + Tier-2 scaffolding + local & cloud adapters, off by default.)* | 4.1 | M |
-| **P1** | **Promote evals to first-class.** Add an `evals/` suite with a versioned dataset and an **LLM-judge graded** harness (output eval), plus at least lightweight **trajectory checks** (did the slice loop run spec→test→review in order; did the agent touch only in-scope modules). Add an *eval ratchet* mirroring the coverage ratchet. Reframe recordings as *demos that supplement* evals, not as the bar. *(Step 1 underway: output-eval suite + eval ratchet implemented; trajectory checks pending.)* | 4.2 | M–L |
+| **P1** | **Promote evals to first-class.** Add an `evals/` suite with a versioned dataset and an **LLM-judge graded** harness (output eval), plus at least lightweight **trajectory checks** (did the slice loop run spec→test→review in order; did the agent touch only in-scope modules). Add an *eval ratchet* mirroring the coverage ratchet. Reframe recordings as *demos that supplement* evals, not as the bar. *(Done — step 1 + step 4: output-eval suite + eval ratchet + trajectory checks via `check-trajectory` and the `trajectory-eval` workflow.)* | 4.2 | M–L |
 | **P2** | **Flip to test-first within the slice loop.** Reorder Phase 4 so `test-engineer` writes failing `@trace`'d tests from the spec scenarios *before* `capability-implementer` runs (red → green). Keeps every existing gate; changes only ordering. *(Done — step 3.)* | 4.4 | S |
-| **P2** | **Add a context-architecture decision.** A short `docs/context-architecture.md` (or ADR) declaring what is static (`AGENTS.md` core rules) vs. dynamically/progressively loaded (skills, per-domain rule packs), with a token budget. Treat it as versioned, per the whitepaper. | 4.3 | S |
-| **P3** | **Parallelize non-DB slices by default**; reserve sequential-only for migration-touching slices. Document the safe-parallel vs. must-serialize partition in the capability plan. | 4.5 | S |
-| **P3** | **Add a model/effort tier table** to `MASTER-PROMPT.md`: cheap/low-effort for mechanical agents (scaffolding, doc generation), high-effort for verification/triage. Wire the workflow `model`/`effort` overrides accordingly. | 4.5 | S |
-| **P3** | **Wire ongoing connectors** (issue tracker / Slack MCP) so UAT triage and automations can open tickets and post status autonomously — the loop-engineering "connectors" primitive applied to operations, not just deployment. | 15 | M |
+| **P2** | **Add a context-architecture decision.** A short `docs/context-architecture.md` (or ADR) declaring what is static (`AGENTS.md` core rules) vs. dynamically/progressively loaded (skills, per-domain rule packs), with a token budget. Treat it as versioned, per the whitepaper. *(Done — step 5: `context-architecture` template + AGENTS/Phase-0 hooks.)* | 4.3 | S |
+| **P3** | **Parallelize non-DB slices by default**; reserve sequential-only for migration-touching slices. Document the safe-parallel vs. must-serialize partition in the capability plan. *(Done — step 5.)* | 4.5 | S |
+| **P3** | **Add a model/effort tier table** to `MASTER-PROMPT.md`: cheap/low-effort for mechanical agents (scaffolding, doc generation), high-effort for verification/triage. Wire the workflow `model`/`effort` overrides accordingly. *(Done — step 5.)* | 4.5 | S |
+| **P3** | **Wire ongoing connectors** (issue tracker / Slack MCP) so UAT triage and automations can open tickets and post status autonomously — the loop-engineering "connectors" primitive applied to operations, not just deployment. *(Done — step 5.)* | 15 | M |
 
 ---
 
 ## 6. Bottom line
 
-Project Factory is **not** behind the curve — it is a rigorous, code-backed implementation of exactly the principles these 2026 references advocate, and on verification and loop design it is **ahead of the prose**. Its limitations are the boundaries of its chosen mission: it is a *one-shot, high-assurance delivery pipeline*, not yet a *continuously running agent fleet*. The four references increasingly describe the latter. Adopting the P1 items — **scheduled automations** and **evals-as-benchmarks** — would move it from "best-practice project delivery" to "standing factory," which is where all four sources are pointing.
+Project Factory is **not** behind the curve — and after this upgrade it is no longer a *one-shot* pipeline either. Every material and secondary gap is closed: scheduled automations (a standing factory), output **and** trajectory evals, test-first delivery, explicit context-architecture economics, default slice parallelism, model/effort cost tiers, and connectors for ongoing ops — and on verification and loop design it was already **ahead of the prose**. What the four references describe as the destination — a continuously running, rigorously verified agent fleet — is now implemented here, in a deliberately pragmatic, cost-bounded, opt-in form. The one frontier left is genuinely beyond what these sources prescribe: **agent *meta*-evals** that grade the factory's own agents across many runs.
 
 ---
 
