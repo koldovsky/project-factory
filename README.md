@@ -5,6 +5,10 @@ the Ordering & Fulfillment Platform in this repository was built: spec-driven
 development (OpenSpec), capability slicing, relentless validation, and a QA
 proof pack that ends with **automated UAT video recordings**.
 
+Packaged as a **Claude Code plugin**: add it to any new or existing repo and an
+orchestrator skill drives the agents through the whole lifecycle (see
+[*How to use it*](#how-to-use-it)).
+
 It encodes the complete, proven lifecycle reconstructed from this repo's git
 history (22 commits, ~30 engineer-hours, 36/36 MVP requirements delivered) plus
 the UAT bug-triage round — including every lesson learned the hard way.
@@ -43,32 +47,44 @@ the UAT bug-triage round — including every lesson learned the hard way.
 
 ## How to use it
 
-1. Create an empty directory for the new project (git init optional — the
-   framework will do it).
-2. Copy the **contents** of this `project-factory/` folder into it:
-   - `.claude/` (agents + workflows) goes to the project root as-is;
-   - keep `MASTER-PROMPT.md`, `templates/`, `scripts/`, `checklists/` under a
-     `project-factory/` subfolder (the orchestrator reads them from there).
-3. Open Claude Code in that directory and paste:
+It's a **Claude Code plugin** — install once, use in any repo (new or existing).
 
-   ```text
-   Read project-factory/MASTER-PROMPT.md and execute it as the orchestrator.
-   I explicitly opt in to multi-agent workflow orchestration (use the Workflow
-   tool and subagents as the playbook directs).
+### Install
 
-   Here are the requirements for the project:
-   <paste or attach your requirements document / RFP / notes>
-   ```
+```bash
+# add this repo as a marketplace, then install the plugin
+claude plugin marketplace add <git-url-or-local-path-to-this-repo>
+claude plugin install project-factory
+# …or, for local development, just point Claude Code at the repo:
+claude --plugin-dir <path-to-this-repo>
+```
 
-4. Answer the clarification batch (Phase 1) and the two approval checkpoints
-   (scope sign-off, capability-plan sign-off). Everything else runs
-   autonomously, gate by gate.
+### Run it
+
+Open Claude Code in the **target** repo. Let the `project-factory` skill trigger
+("set up project factory", "build this to spec"), or drive it explicitly:
+
+- **New / greenfield:** `/project-factory:init` installs the loop (Gate G0); then
+  hand the orchestrator your requirements — it runs Phases 1–8.
+- **Existing codebase:** `/project-factory:onboard` detects the stack, installs
+  the loop **non-destructively**, reverse-engineers requirements + baseline specs
+  from your code, then governs all new work through the gates.
+
+You opt in to multi-agent orchestration; then answer the clarification batch and
+the approval checkpoints (scope, capability plan, and — for onboard — the
+reverse-engineered baseline). Everything else runs autonomously, gate by gate.
+
+> Prefer the manual flow? You can still read `MASTER-PROMPT.md` and execute it
+> directly — the plugin simply automates the install + dispatch.
 
 ## Contents
 
 | Path | Purpose |
 |---|---|
-| `MASTER-PROMPT.md` | The orchestrator playbook — phases, gates, agent/workflow assignments |
+| `.claude-plugin/` | Plugin manifest (`plugin.json`) + `marketplace.json` — makes this repo an installable Claude Code plugin |
+| `skills/project-factory/` | The orchestrator **skill** (entry point + control plane) + `references/` (new-project, existing-project playbooks) |
+| `commands/` | `/project-factory:init` (scaffold the loop) and `/project-factory:onboard` (retrofit an existing repo) |
+| `MASTER-PROMPT.md` | The orchestrator playbook — phases, gates, agent/workflow assignments (the skill's deep reference) |
 | `LOOP.md` | Why the framework is loop-engineered: nested feedback loops, trace chain, maker≠checker, anti-patterns countered |
 | `.claude/agents/*.md` | 10 specialized subagents (analyst, spec writer, implementer, test engineer, reviewers, auditor, QA documenter, bug triage, eval judge) |
 | `.claude/workflows/*.js` | 5 deterministic multi-agent workflows: `review-gate`, `spec-pipeline`, `uat-triage`, `eval-suite`, `trajectory-eval` |

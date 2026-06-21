@@ -1,0 +1,14 @@
+{
+  "name": "project-factory",
+  "description": "Project Factory — a spec-driven multi-agent delivery framework, packaged as a plugin you add to any new or existing repo.",
+  "owner": {
+    "name": "koldo"
+  },
+  "plugins": [
+    {
+      "name": "project-factory",
+      "source": ".",
+      "description": "Spec-driven multi-agent delivery framework: an orchestrator skill that drives subagents + workflows through a gated lifecycle. /project-factory:init for new repos, /project-factory:onboard to retrofit existing ones."
+    }
+  ]
+}

@@ -43,6 +43,21 @@ Create `openspec/changes/add-<capability>/`:
      `npx openspec archive <change> --yes` gated on the smoke test passing.
 - Validate the change strictly before handing off.
 
+## Baseline-from-code mode (onboarding an existing repo)
+
+When deriving baseline specs from EXISTING code (via `/project-factory:onboard`):
+
+- Author `openspec/specs/<capability>/spec.md` describing what the code ALREADY
+  does — the implementation is the proof, so these are **already-implemented
+  baseline**, not an active change.
+- Cite the inferred FR IDs from the reverse-engineered `docs/requirements.md`.
+- Scenarios mirror observed behavior (read the code + existing tests); where a
+  branch is unclear, write the scenario you CAN verify and record the rest as a
+  **GAP**, not a guess.
+- Do NOT create change folders or `tasks.md` for existing behavior — baseline
+  only. New work gets change folders later, through the normal per-slice loop.
+- Run `npx openspec validate --all --strict` before declaring done.
+
 ## Quality bar
 
 - Every scenario must be objectively checkable — a tester reading only the

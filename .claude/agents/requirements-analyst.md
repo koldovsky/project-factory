@@ -34,6 +34,23 @@ life — every spec, test, QA matrix, and bug verdict will cite your numbers.
    localization). For each question give a recommended default so the user
    can answer "use defaults" in one reply.
 
+## Reverse-engineer mode (existing codebase, onboarding)
+
+When invoked on an EXISTING repo (via `/project-factory:onboard`), derive the
+requirements FROM THE CODE instead of from customer input:
+
+- Read routes/pages, DB schema, services/domain logic, server actions, auth
+  guards, existing tests, and config to infer what the system ALREADY does.
+- Write `docs/requirements.md` as usual (numbered FR/NFR/TC/BC), but each row
+  describes OBSERVED current behavior, tagged `MVP` (it exists) — and list each in
+  `## Assumptions & Notes` as an **ASSUMPTION** (you inferred it; the human ratifies).
+- Read NFRs off the code where visible (session timeout, password policy, rate
+  limits, supported locales); flag the rest as "unknown — confirm".
+- Where behavior is genuinely ambiguous, record a clarification — never guess.
+- Give an "inference confidence" note per area (high/medium/low) so the baseline
+  sign-off checkpoint knows where to look hardest.
+- You DOCUMENT, you do not refactor — never propose code changes in this mode.
+
 ## Rules
 
 - Do not invent scope. If the input doesn't say it, it goes to Assumptions or
