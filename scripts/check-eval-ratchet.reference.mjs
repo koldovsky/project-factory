@@ -25,8 +25,10 @@ const BASELINE = "quality/eval-baseline.json";
 const TOLERANCE = 1.0;
 
 if (!existsSync(SUMMARY)) {
-  console.error(`FAIL  ${SUMMARY} not found — run the eval-suite workflow first`);
-  process.exit(1);
+  // Graceful before the eval suite has ever run (early project / pre-baseline):
+  // there is nothing to ratchet yet, so SKIP rather than fail the build.
+  console.warn(`SKIP  ${SUMMARY} not found — no eval results yet (run the eval-suite workflow). Nothing to ratchet.`);
+  process.exit(0);
 }
 const summary = JSON.parse(readFileSync(SUMMARY, "utf8"));
 const current = summary.dimensions ?? {};

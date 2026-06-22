@@ -59,7 +59,8 @@ function* walk(dir, filter) {
     else if (filter(entry)) yield join(dir, entry);
   }
 }
-const idsIn = (text) => [...new Set(text.match(/\b(?:FR|NFR|TC|BC|BUG)-\d+\b/g) ?? [])];
+// Ids may be plain (FR-12) or categorized (FR-SHELL-01, NFR-A11Y-02).
+const idsIn = (text) => [...new Set(text.match(/\b(?:FR|NFR|TC|BC|BUG)-(?:[A-Z0-9]+-)?\d+\b/g) ?? [])];
 
 // ---------- 1. parse requirements ----------
 // Missing requirements file is NORMAL before Phase 1 (the loop installs in
@@ -74,7 +75,7 @@ if (!requirementsPresent) {
 }
 const requirements = new Map(); // id -> { phase }
 for (const line of (reqText ?? "").split("\n")) {
-  const m = line.match(/^\|\s*((?:FR|NFR|TC|BC)-\d+)\s*\|/);
+  const m = line.match(/^\|\s*((?:FR|NFR|TC|BC)-(?:[A-Z0-9]+-)?\d+)\s*\|/);
   if (!m) continue;
   const phase = /\|\s*Future\s*\|/i.test(line) ? "Future" : "MVP";
   requirements.set(m[1], { phase });
@@ -160,7 +161,12 @@ for (const id of mvpFRs) {
   }
 }
 
-// ---------- 5. recording evidence ----------
+// ---------- 5. recording evidence (COVERAGE MAP — weak signal) ----------
+// This only checks that an FR id is MENTIONED in a manifest. It does NOT prove
+// the clip exists or passed — that is `scripts/check-recordings.mjs`'s job
+// (video on disk + size + asserted + vision). Keep both: this maps coverage,
+// check-recordings validates the artifacts. `--strict-recordings` here is a
+// coverage gate, not an evidence gate.
 const recordingMentions = new Map(); // id -> [manifest files]
 for (const file of walk(PATHS.qaDir, (f) => f === "manifest.json")) {
   const ids = idsIn(read(file) ?? "");

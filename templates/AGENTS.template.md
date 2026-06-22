@@ -77,6 +77,9 @@ the token budget, and what to demote when this file grows past it.
   (Better Auth: `nextCookies()` plugin, last in plugins list).
 - Seed/test helpers re-pin baseline state; day-bound test assertions use
   LOCAL calendar dates.
+- Validate the RENDERED result for UI, not just code/DOM: gate with axe
+  (`check-a11y`, light+dark) AND a vision pass (`vision-verify` — a fresh agent
+  looks at the settled still); recordings must assert the FRs they show.
 
 ## Test-first (per slice)
 

@@ -20,8 +20,9 @@ const METRICS = ["lines", "statements", "functions", "branches"];
 const TOLERANCE = 0.1; // percentage points of float noise allowed
 
 if (!existsSync(SUMMARY)) {
-  console.error(`FAIL  ${SUMMARY} not found — run \`npm run test:coverage\` first`);
-  process.exit(1);
+  // Graceful before coverage has ever been generated (pre-baseline): SKIP, don't fail.
+  console.warn(`SKIP  ${SUMMARY} not found — no coverage yet (run \`npm run test:coverage\`). Nothing to ratchet.`);
+  process.exit(0);
 }
 const total = JSON.parse(readFileSync(SUMMARY, "utf8")).total;
 const current = Object.fromEntries(METRICS.map((m) => [m, total[m].pct]));

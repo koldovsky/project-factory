@@ -22,6 +22,13 @@ const commands = [
     args: ["scripts/check-trajectory.mjs"],
   },
   {
+    // Real recordings gate: video artifacts exist + asserted + vision met
+    // (graceful before Phase 6 — warns, never fails, when no manifest yet).
+    name: "recordings",
+    command: "node",
+    args: ["scripts/check-recordings.mjs"],
+  },
+  {
     name: "unit-tests",
     command: "npm",
     args: ["run", "test:run"],

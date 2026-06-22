@@ -105,7 +105,7 @@ preserved). `init --tools=…` lays the adapters into a target repo. Full detail
 | `commands/` | `/project-factory:init` (scaffold the loop) and `/project-factory:onboard` (retrofit an existing repo) |
 | `MASTER-PROMPT.md` | The orchestrator playbook — phases, gates, agent/workflow assignments (the skill's deep reference) |
 | `LOOP.md` | Why the framework is loop-engineered: nested feedback loops, trace chain, maker≠checker, anti-patterns countered |
-| `.claude/agents/*.md` | 10 specialized subagents (analyst, spec writer, implementer, test engineer, reviewers, auditor, QA documenter, bug triage, eval judge) |
+| `agents/*.md` | 11 specialized subagents (analyst, spec writer, implementer, test engineer, reviewers, auditor, QA documenter, bug triage, eval judge, vision judge) — plugin-native, available at session start |
 | `.claude/workflows/*.js` | 5 deterministic multi-agent workflows: `review-gate`, `spec-pipeline`, `uat-triage`, `eval-suite`, `trajectory-eval` |
 | `checklists/quality-gates.md` | Gate definitions G0–G8 — each gate is a COMMAND SET with exit codes, plus judgment criteria on top |
 | `templates/` | Skeletons for AGENTS.md, requirements, capability plan, current-state handoff, QA pack, OpenSpec change docs, ADRs |

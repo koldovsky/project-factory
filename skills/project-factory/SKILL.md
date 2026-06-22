@@ -53,6 +53,7 @@ read the same files from the repo root):
 - **Gates are hard.** All exit criteria pass or the phase is not done. Never archive a change before its smoke test.
 - **Test-first.** Tests are written from the spec and observed to fail (red) before implementation makes them green — never weaken a test to pass it.
 - **Evals are the bar.** Output evals + trajectory evals decide quality; recordings illustrate.
+- **Validate the rendered result, not just the code and the DOM.** Structural tests and assertions are blind to rendering — an inert control that still renders, or AA-borderline text, passes them all. For any UI: recordings must *assert* the FRs they show, gate with `check-a11y` (light+dark) AND the `vision-verify` workflow (a fresh agent looks at the settled still); fix → re-record → re-verify until met.
 - **Honest reporting.** If something fails, say so with the output. Every "done" points at a test run, recording, or validation log.
 - **Error-surface.** No user input may produce a generic 500; no external call may fail silently.
 - **Model/effort tiers.** Cheap models for mechanical work; the strongest for verification/judgment (review-gate, eval-judge, trajectory-eval).
@@ -62,11 +63,18 @@ read the same files from the repo root):
 
 Delivered into the project by `init`/`onboard`, then dispatched by you:
 
-- **Subagents** (`.claude/agents/`): `requirements-analyst`, `spec-writer`,
-  `capability-implementer`, `test-engineer`, `code-reviewer`, `security-reviewer`,
-  `spec-compliance-auditor`, `qa-documenter`, `bug-triage-analyst`, `eval-judge`.
+- **Subagents** (plugin-native `agents/`, also delivered to `.claude/agents/` by
+  init): `requirements-analyst`, `spec-writer`, `capability-implementer`,
+  `test-engineer`, `code-reviewer`, `security-reviewer`, `spec-compliance-auditor`,
+  `qa-documenter`, `bug-triage-analyst`, `eval-judge`, `vision-judge`.
 - **Workflows** (`.claude/workflows/`): `spec-pipeline`, `review-gate`,
-  `eval-suite`, `trajectory-eval`, `uat-triage`.
+  `eval-suite`, `trajectory-eval`, `vision-verify`, `uat-triage`.
+
+> **Workflow caveat (Claude Code):** if a Workflow runs 0 agents / returns `{}`
+> when you passed `args`, the args did not reach the script (a harness bug seen
+> in practice). Workaround: hardcode the data into the persisted `scriptPath`
+> file and re-invoke. Every project-factory workflow returns `{error}` on empty
+> args — treat that as the signal, never a silent pass.
 
 Dispatch each exactly where the playbook assigns it (e.g. `spec-pipeline` in
 Phase 2, `review-gate` in 4e/7, `eval-suite` + `trajectory-eval` in 6/7,
