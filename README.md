@@ -1,17 +1,14 @@
 # Project Factory — Multi-Agent SDD Delivery Framework
 
-A reusable, multi-agent framework for building business applications the way
-the Ordering & Fulfillment Platform in this repository was built: spec-driven
+A reusable, multi-agent framework for building business applications with spec-driven
 development (OpenSpec), capability slicing, relentless validation, and a QA
 proof pack that ends with **automated UAT video recordings**.
 
-Packaged as a **Claude Code plugin**: add it to any new or existing repo and an
-orchestrator skill drives the agents through the whole lifecycle (see
-[*How to use it*](#how-to-use-it)).
+Packaged as a **Claude Code plugin** and works with other modern Agents like Codex, Cursor, 
+Github Copilot: add it to any new or existing repo and an orchestrator skill drives the
+agents through the whole lifecycle (see [*How to use it*](#how-to-use-it)).
 
-It encodes the complete, proven lifecycle reconstructed from this repo's git
-history (22 commits, ~30 engineer-hours, 36/36 MVP requirements delivered) plus
-the UAT bug-triage round — including every lesson learned the hard way.
+It encodes the complete, proven lifecycle tested on sample projects.
 
 ## What it produces for a new project
 
