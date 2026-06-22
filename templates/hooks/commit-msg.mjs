@@ -17,7 +17,8 @@ const touchesFeatureCode = staged.some((f) => /^(app|lib|db|src)\//.test(f) && !
 
 if (!touchesFeatureCode) process.exit(0);
 
-const hasRefs = /^Refs:\s*((FR|NFR|TC|BC|BUG)-\d+)(,\s*(FR|NFR|TC|BC|BUG)-\d+)*\s*$/m.test(msg);
+// Ids may be plain (FR-12) or categorized (FR-SHELL-01, NFR-A11Y-02).
+const hasRefs = /^Refs:\s*((FR|NFR|TC|BC|BUG)-(?:[A-Z0-9]+-)?\d+)(,\s*(FR|NFR|TC|BC|BUG)-(?:[A-Z0-9]+-)?\d+)*\s*$/m.test(msg);
 const hasSlice = /^Slice:\s*[a-z0-9-]+\s*$/m.test(msg);
 
 if (!hasRefs && !hasSlice) {

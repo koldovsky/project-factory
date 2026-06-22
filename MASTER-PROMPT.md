@@ -44,6 +44,13 @@ playbook assigns them. The user has opted into multi-agent orchestration.
   no external call (email, file export, third-party API) may fail silently.
   Build the inline-error pattern (`?formError=` + banner component, or the
   stack's equivalent) in the FIRST capability and reuse it everywhere.
+- **Validate the rendered result, not just code and DOM.** Structural/textual
+  gates are blind to rendering — an inert-but-rendered control, or low-contrast
+  text, sails through them and the code audit. For UI capabilities, gate with
+  `check-a11y` (axe, light+dark) AND `vision-verify` (a fresh agent looks at the
+  settled still: `{met, readable}`); recordings must ASSERT the FRs they show;
+  fix → re-record → re-verify until met. axe alone is insufficient — pair it with
+  the vision pass.
 - **Ask only at checkpoints.** Phases 1 and 3 each end with a user approval.
   Everything else is autonomous; batch questions, don't dribble them.
 - **Model & effort tiers (cost discipline).** Match model/effort to the job:
@@ -67,6 +74,12 @@ playbook assigns them. The user has opted into multi-agent orchestration.
    write an ADR from `project-factory/templates/adr.template.md` into
    `docs/adr/`. If the default fits, write ADR-0001 recording that decision
    anyway.
+   **The declared stack DRIVES the loop — it is the source of truth, not a fixed
+   assumption.** No DB → the per-slice smoke is a service/integration flow, not a
+   real-DB one (skip DB steps); no email/auth → omit those checks; recording
+   defaults to **headless Playwright** (do not ban it). Push the stack decision
+   through the reference scripts and the gates; never make a legitimately
+   different stack fight the framework.
 3. **Scaffold:** `create-next-app` (or stack equivalent), TypeScript, ESLint.
    Git init + initial commit.
 4. **Rules & skills:**
@@ -206,7 +219,8 @@ b. **Tests first (red):** the **test-engineer** subagent writes, FROM THE SPEC
    and before the implementation exists, unit tests for every pure domain
    function (validation, calculations, state machines, parsers — including
    locale/edge inputs: decimal commas, trailing zeros, oversized values, blank
-   submissions) and the slice's real-DB smoke-flow skeleton. It runs them: they
+   submissions) and the slice's smoke-flow skeleton (real-DB if the stack has a
+   DB; otherwise a service/integration smoke of the slice's operations). It runs them: they
    MUST fail (red) for the right reason — asserting the specified behavior, not
    ratifying code that doesn't exist yet. Every test file carries `@trace FR-x`
    annotations (`node scripts/check-traceability.mjs` reports gaps). It also
@@ -263,16 +277,21 @@ green, smoke passed, review findings fixed, change archived, handoff updated.
    `requirements-traceability-matrix.md` (every FR/NFR → implementation →
    test → evidence), `manual-test-plan.md`, `demo-script.md`,
    `risk-register.md`, `mvp-acceptance-report.md`.
-2. Adapt `project-factory/scripts/record-demos.reference.ts` to the project:
-   one clip per capability + one security-negative clip. Each clip: title
-   card → real UI walkthrough → full-page screenshot. Output to
-   `docs/qa/demo-recordings/` with `manifest.json` + `README.md` index.
-   RECORDING RULES (hard): one clip per viewport — NEVER resize the
-   viewport mid-clip (the fixed recordVideo frame distorts; the harness
-   throws); responsive proof = dedicated clips (desktop + 360px) with
-   matching video frame sizes; before passing G6, VISUALLY REVIEW every
-   .png and frame-sensitive video moment — generated-but-unwatched
-   artifacts are not evidence.
+2. **Record + validate (headless, automated).** Adapt
+   `project-factory/scripts/record-demos.reference.mjs` — a headless Playwright
+   harness that runs its OWN background browser (NEVER the user's; no save
+   dialog). One clip per capability + one security-negative clip; each clip
+   DRIVES the flow and **ASSERTS the FRs it proves** (the assertion *is* the
+   validation — a non-asserting clip is not evidence), paces so async content
+   (maps/charts/fetches) renders, and captures a SETTLED full-page still. Output
+   to `docs/qa/demo-recordings/` with `manifest.json` (per clip: video +
+   screenshot + explainer + `asserted`). RECORDING RULES (hard): one clip per
+   viewport — NEVER resize mid-clip; responsive proof = dedicated clips
+   (desktop + 360px). Then **validate the artifacts, not just the code**:
+   `node scripts/check-recordings.mjs` (real video + `asserted`) AND the
+   **`vision-verify` workflow** (a fresh agent reads each settled still and
+   returns `{met, readable}`; on any miss → fix → re-record → re-verify until
+   met). Generated-but-unverified artifacts do NOT pass G6.
 3. **Evals — the quality bar.** Run the `eval-suite` workflow over the eval
    cases authored per slice. Review `docs/qa/eval-report.md`; fix any failing
    case and re-run (never waive a failing rubric). Establish/ratchet the
@@ -324,12 +343,13 @@ bug report:
    case (rubric + `@trace BUG-x`) too, not only a unit test. Re-run the full
    battery.
 4. Re-test the original reproduction steps live in a browser.
-5. **Bug-fix proof recordings:** adapt
-   `project-factory/scripts/record-proof-recordings.reference.ts` — one clip
-   per fixed bug re-executing the QA reproduction steps and showing the fixed
-   behavior; each clip gets a same-named `.md` explainer (QA quote, root
-   cause, fix, what-the-video-shows, expected outcome) + `.png`. Output to
-   `docs/qa/bugfix-recordings/<date>/` with README index + manifest.
+5. **Bug-fix proof recordings:** use the same headless harness
+   (`scripts/record-demos.mjs` with `OUT_DIR=bugfix-recordings/<date>`) — one
+   clip per fixed bug that re-executes the QA reproduction steps and **asserts**
+   the fixed behavior; each clip gets a same-named `.md` explainer (QA quote,
+   root cause, fix, what-the-video-shows, expected outcome) + settled `.png`.
+   Output to `docs/qa/bugfix-recordings/<date>/`; validate with
+   `check-recordings` + `vision-verify`.
 6. **Customer report** (`docs/qa/<date>-bugfix-report.md`): traceability
    table with verdicts, root-cause analysis, fixes by file, ops actions,
    verification evidence, process improvements, effort log.

@@ -29,15 +29,18 @@ automations workflow; `--force` overwrites framework-owned files instead of skip
    `evals/results/`, `.githooks/`, `.github/workflows/`, `openspec/`.
 
 2. **Agents & workflows** (copy verbatim, skip-if-exists):
-   - `${CLAUDE_PLUGIN_ROOT}/.claude/agents/*.md` → `.claude/agents/`
+   - `${CLAUDE_PLUGIN_ROOT}/agents/*.md` → `.claude/agents/` (the plugin already
+     provides these natively, but deliver project-local copies so the workflows
+     resolve them by bare `agentType` name)
    - `${CLAUDE_PLUGIN_ROOT}/.claude/workflows/*.js` → `.claude/workflows/`
 
 3. **Deterministic scripts** (copy + drop the `.reference` segment):
    - `scripts/check-traceability.reference.mjs` → `scripts/check-traceability.mjs`
      (same for `check-coverage-ratchet`, `check-eval-ratchet`, `check-trajectory`,
      `qa-verify`).
-   - `scripts/record-demos.reference.ts` / `record-proof-recordings.reference.ts`
-     → `scripts/*.ts`.
+   - `scripts/record-demos.reference.mjs` → `scripts/record-demos.mjs` (the
+     headless recording+validation harness — demo and bugfix proof via `OUT_DIR`);
+     `scripts/check-recordings.reference.mjs` → `scripts/check-recordings.mjs`.
    - `scripts/automations/{run,drift-watch,dep-audit,ci-triage}.reference.mjs`
      → `scripts/automations/*.mjs`; `scripts/automations/lib/*.mjs` verbatim;
      `automations/registry.json` → `automations/registry.json` (ships OFF).

@@ -72,7 +72,8 @@ node scripts/check-trajectory.mjs          # review evidence clean, Slice: trail
       inputs), each annotated `@trace FR-x`.
 - [ ] Eval case(s) authored for the slice's key error-surface / qualitative
       NFR behavior (`evals/cases/*.eval.ts`, rubric + `@trace`); graded in G6.
-- [ ] Real-DB smoke flow executed and passed.
+- [ ] Smoke flow executed and passed — real-DB if the stack has a DB, else a
+      service/integration smoke of the slice's operations (stack-driven).
 - [ ] `review-gate` workflow run; ALL confirmed (and contested) findings fixed;
       commands re-run green. Reviewer agents ≠ implementer agent.
 - [ ] Review evidence persisted (`openspec/changes/<slice>/review-findings.json`,
@@ -110,14 +111,19 @@ npm run test:coverage && node scripts/check-coverage-ratchet.mjs --update
       `node scripts/check-eval-ratchet.mjs --update`) — the ratchet guards it
       from here on. Recordings illustrate representative eval cases; the eval
       decides pass/fail.
-- [ ] Demo recordings: one clip per capability + security-negative clip,
-      each with video + screenshot, indexed by manifest.json + README.
-- [ ] Responsive scenarios recorded as ONE CLIP PER VIEWPORT (video frame
-      size == viewport; the recorder harness throws on mid-clip resizes —
-      never disable that guard).
-- [ ] **Every recording visually reviewed**: each final .png opened and
-      checked; frame-sensitive video moments verified (scrub or dedicated
-      screenshots). Generated-but-unwatched artifacts do not pass this gate.
+- [ ] Recordings are AUTOMATED + headless (`scripts/record-demos.mjs`, never the
+      user's browser, no save dialog); each clip ASSERTS the FRs it proves. One
+      clip per capability + security-negative; one clip per viewport (no mid-clip
+      resize).
+- [ ] `node scripts/check-recordings.mjs` green: every clip has a real video on
+      disk (non-trivial size) + screenshot + `asserted:true` — not just an id in
+      a manifest (`check-traceability --strict-recordings` is only a coverage map).
+- [ ] **Vision-verified:** the `vision-verify` workflow passed — a fresh agent
+      looked at every settled still and judged it met + readable; any miss was
+      fixed → re-recorded → re-verified until met.
+- [ ] **a11y gate** (UI projects): `node scripts/check-a11y.mjs` green in BOTH
+      light and dark (WCAG-AA incl. contrast). axe is necessary but not
+      sufficient — the vision pass above is its human-eye pair.
 - [ ] Responsive E2E checks cover REPRESENTATIVE STATES (e.g. with the
       fullest data variant on screen), not just the default page.
 - [ ] `npm run qa:verify` report regenerated and all-green.
@@ -141,6 +147,10 @@ npm audit --audit-level=high
       judgements addressed).
 - [ ] Authz matrix verified per route × role; no secrets in repo/history;
       error-surface audit clean.
+- [ ] NFRs resolved by class: `local-verifiable` NFRs actually verified (a11y,
+      contrast, validation, budgets measurable locally); `deploy-gated` NFRs
+      (Lighthouse, p95 TTFB, uptime) marked **pending live measurement** in the
+      gate output — explicit, never silently skipped or used to block.
 - [ ] `docs/technical/` complete; estimation + delivery report written.
 - [ ] CI green on the release commit (the loop nobody can skip).
 - [ ] Deployed; live URL smoke-checked (status, no localhost leakage, clean

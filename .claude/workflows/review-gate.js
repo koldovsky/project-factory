@@ -67,6 +67,13 @@ const DIMENSIONS = [
     agentType: 'spec-compliance-auditor',
     prompt: `${diffInstruction}\nScope: ${scope}. ${focus}\nAudit the implementation against its OpenSpec requirements and scenarios: missing/partial/contradicted scenarios, undocumented scope drift, ticked tasks without artifacts, FR/NFR coverage. Return structured findings only.`,
   },
+  {
+    // Eyes-on-pixels lens — the code audit is blind to rendering (a control that
+    // renders but is inert, AA-borderline text). Uses the default agent (Read
+    // can open images). No-ops when there's no UI change / no screenshots.
+    key: 'visual',
+    prompt: `${diffInstruction}\nScope: ${scope}. ${focus}\nVISUAL lens (UI only): if this change touches UI AND rendered screenshots exist under docs/qa/ (e.g. demo-recordings/*.png, vision stills), READ those images and report defects a code review cannot see — inert-looking controls, poor color contrast / unreadable text, broken or overlapping layout, content that did not render, wrong-moment frames. Cite the screenshot path as \`file\`. If there is no UI change or no screenshots, return an empty findings list. Return structured findings only.`,
+  },
 ]
 
 phase('Find')

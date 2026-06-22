@@ -68,6 +68,9 @@ const domainToSlices = new Map(); // lib domain -> [slices]
 
 for (const slice of slices) {
   const dir = join(PATHS.archiveDir, slice);
+  // OpenSpec archives as `YYYY-MM-DD-add-<cap>`, but the commit trailer is the
+  // bare `Slice: add-<cap>` — strip the date prefix so trailer matching works.
+  const trailerName = slice.replace(/^\d{4}-\d{2}-\d{2}-/, "");
 
   // 1. review evidence
   let reviewEvidence = "missing";
@@ -91,7 +94,7 @@ for (const slice of slices) {
   let trailerCommits = 0;
   let libDomains = [];
   if (isRepo) {
-    const { ok, out } = git(["log", "--all", `--grep=Slice: ${slice}`, "--name-only", "--pretty=format:commit %H"]);
+    const { ok, out } = git(["log", "--all", `--grep=Slice: ${trailerName}`, "--name-only", "--pretty=format:commit %H"]);
     if (ok) {
       const files = new Set();
       for (const line of out.split("\n")) {
@@ -110,7 +113,7 @@ for (const slice of slices) {
         domainToSlices.get(d).push(slice);
       }
     }
-    if (trailerCommits === 0) gated(flags.has("--release"), "trailer", `${slice}: no commit carries a "Slice: ${slice}" trailer`);
+    if (trailerCommits === 0) gated(flags.has("--release"), "trailer", `${slice}: no commit carries a "Slice: ${trailerName}" trailer`);
   }
 
   rows.push({ slice, reviewEvidence, trailerCommits, libDomains, processComplete });

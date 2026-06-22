@@ -21,7 +21,11 @@ life — every spec, test, QA matrix, and bug verdict will cite your numbers.
    - `## Non-Functional Requirements (NFR)` — security (password policy,
      session timeout, link expiry), performance (load/screen/calculation
      budgets), availability, compatibility (browsers, devices), usability,
-     localization.
+     localization. **Tag each NFR `local-verifiable`** (testable in CI/locally —
+     contrast, a11y, validation, error handling, calculations) **or
+     `deploy-gated`** (needs a live URL — p95 TTFB, Lighthouse, uptime); the
+     release gate handles the two differently (deploy-gated ones are marked
+     pending live measurement, not silently skipped).
    - `## Constraints` — `TC-x` technical (stack, integrations, out-of-scope
      items like images/imports), `BC-x` business (phasing, change control,
      discovery process).
