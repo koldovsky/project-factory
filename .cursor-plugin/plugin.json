@@ -1,7 +1,7 @@
 {
   "name": "project-factory",
   "description": "Spec-driven multi-agent delivery framework. An orchestrator skill drives subagents + a deterministic gated loop (requirements -> OpenSpec specs -> capability slices -> test-first build -> adversarial review -> evals + trajectory -> QA proof -> UAT). Add to a new or existing repo: /project-factory:init scaffolds the loop; /project-factory:onboard retrofits an existing codebase. Reuses the same skills/, commands/, and agents the Claude Code plugin ships; AGENTS.md is the shared rules core.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "koldo"
   }
