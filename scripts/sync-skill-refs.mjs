@@ -25,15 +25,12 @@ const MIRRORS = [
 ];
 
 function withNote(src, content) {
+  // Always prepend the note. We do NOT try to slot it after YAML frontmatter:
+  // that made the output depend on CRLF vs LF (`---\r\n` fails `startsWith("---\n")`),
+  // so the same source produced different mirrors on Windows vs Unix and the
+  // drift `--check` flickered. The mirrors are read as reference docs, not loaded
+  // as commands, so frontmatter position is irrelevant. Deterministic > tidy.
   const note = `<!-- GENERATED MIRROR of ${src}. Do not edit here — edit the canonical file and run \`node scripts/sync-skill-refs.mjs\`. Bundled so the skill is self-contained (standalone + plugin). -->\n`;
-  // Keep YAML frontmatter at the very top: insert the note AFTER it.
-  if (content.startsWith("---\n")) {
-    const close = content.indexOf("\n---", 4);
-    if (close !== -1) {
-      const after = content.indexOf("\n", close + 1) + 1;
-      return content.slice(0, after) + "\n" + note + content.slice(after);
-    }
-  }
   return note + "\n" + content;
 }
 

@@ -1,9 +1,9 @@
+<!-- GENERATED MIRROR of commands/init.md. Do not edit here — edit the canonical file and run `node scripts/sync-skill-refs.mjs`. Bundled so the skill is self-contained (standalone + plugin). -->
+
 ---
 description: Install the Project Factory loop (workflows, agents, check-* scripts, git hooks, CI, OpenSpec, templates) into the current repo — idempotent and non-destructive. Run once before any feature work.
 argument-hint: "[--tools=claude,cursor,codex,copilot] [--with-automations] [--force]"
 ---
-
-<!-- GENERATED MIRROR of commands/init.md. Do not edit here — edit the canonical file and run `node scripts/sync-skill-refs.mjs`. Bundled so the skill is self-contained (standalone + plugin). -->
 
 # /project-factory:init — install the loop
 
