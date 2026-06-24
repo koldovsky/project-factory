@@ -15,8 +15,8 @@ hooks fire** with a test commit. This is **Gate G0** — no feature work before 
 
 ## 2. Run the playbook (Phases 1–8)
 
-Follow `${CLAUDE_PLUGIN_ROOT}/MASTER-PROMPT.md` from Phase 1, honoring
-`${CLAUDE_PLUGIN_ROOT}/checklists/quality-gates.md` (G1–G8):
+Follow [master-playbook.md](master-playbook.md) from Phase 1, honoring
+[quality-gates.md](quality-gates.md) (G1–G8):
 
 - **Phase 1** — `requirements-analyst` → numbered `FR/NFR/TC/BC` + product brief + a batched clarification list → **SCOPE SIGN-OFF** (G1).
 - **Phase 2** — `spec-pipeline` workflow → baseline OpenSpec specs (every MVP FR owned once) (G2).

@@ -66,15 +66,15 @@ generated in a phase, committed as evidence, then validated.
 ## Authoring a case
 
 A case grades quality, so write an **objective rubric**, not an assertion. See
-[`cases/ordering.eval.ts`](cases/ordering.eval.ts) for two worked examples.
+[`cases/sample.eval.ts`](cases/sample.eval.ts) for two worked examples.
 
 ```ts
 {
-  id: 'eval-error-clarity-negative-quantity',
+  id: 'eval-error-clarity-invalid-input',
   trace: ['NFR-3', 'FR-9'],          // ← also list these in the @trace footer
   dimension: 'error-clarity',         // ← cases sharing a dimension are averaged + ratcheted together
-  capability: 'ordering',
-  scenario: 'Submit the order form with quantity "-1".',
+  capability: 'sample',
+  scenario: 'Submit the create form with an out-of-range value (e.g. quantity "-1").',
   produce: async () => /* drive the running app / call the service; return the user-visible output */,
   rubric: [
     'CRITICAL: error shown inline, never a generic 500',   // CRITICAL: gates the case

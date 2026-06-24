@@ -56,6 +56,25 @@ claude plugin install project-factory
 claude --plugin-dir <path-to-this-repo>
 ```
 
+### …or as a standalone skill
+
+The `skills/project-factory/` folder is **self-contained** — its `SKILL.md`
+bundles the playbook, gates, and init/onboard procedures under `references/`
+(no `${CLAUDE_PLUGIN_ROOT}` dependency), so you can drop it in as a plain Agent
+Skill instead of installing the plugin:
+
+```bash
+# user-level (every repo) — or .claude/skills/ inside one repo for project-level
+cp -r skills/project-factory ~/.claude/skills/project-factory
+```
+
+It auto-loads next session and triggers on the same phrases. The orchestrator
+**guidance** is fully present standalone; the multi-agent **loop payload** (the
+11 agents, 5 workflows, `check-*` scripts) is still installed into your target
+repo by `init`, which copies it from this plugin/repo — so keep the plugin
+installed or this repo on hand for the build itself. (The plugin path is simplest
+because it carries both at once.)
+
 ### Run it
 
 Open Claude Code in the **target** repo. Let the `project-factory` skill trigger
@@ -98,7 +117,7 @@ preserved). `init --tools=…` lays the adapters into a target repo. Full detail
 | Path | Purpose |
 |---|---|
 | `.claude-plugin/` | Plugin manifest (`plugin.json`) + `marketplace.json` — makes this repo an installable Claude Code plugin |
-| `skills/project-factory/` | The orchestrator **skill** (entry point + control plane) + `references/` (new-project, existing-project playbooks) |
+| `skills/project-factory/` | The orchestrator **skill** (entry point + control plane). **Self-contained** — `references/` bundles the new/existing-project playbooks **and** mirrors of the playbook, gates, and init/onboard procedures, so it works installed as a plugin *or* dropped in as a standalone skill |
 | `commands/` | `/project-factory:init` (scaffold the loop) and `/project-factory:onboard` (retrofit an existing repo) |
 | `MASTER-PROMPT.md` | The orchestrator playbook — phases, gates, agent/workflow assignments (the skill's deep reference) |
 | `LOOP.md` | Why the framework is loop-engineered: nested feedback loops, trace chain, maker≠checker, anti-patterns countered |
@@ -124,7 +143,7 @@ preserved). `init --tools=…` lays the adapters into a target repo. Full detail
 
 ## Default stack (overridable)
 
-Defaults to the stack validated by the source project — **Next.js (App
+Defaults to a proven, production-validated stack — **Next.js (App
 Router) · Postgres (Neon) + Drizzle · Better Auth · Resend · Vitest ·
 Playwright · OpenSpec · Vercel**. Phase 0 includes an explicit stack-decision
 step: any piece may be swapped if the requirements demand it, recorded as an

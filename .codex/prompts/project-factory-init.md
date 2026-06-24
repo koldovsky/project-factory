@@ -12,6 +12,10 @@ CI, OpenSpec, and filled templates — **idempotently and non-destructively**
 `checklists/quality-gates.md`.
 
 Codex subagents have no parallel Workflow fan-out, so run the review/eval/spec
-passes **sequentially with fresh context** (maker ≠ checker). The scripts, gates,
-specs, and evidence are identical to the Claude Code path. See
+passes **sequentially with fresh context** (maker ≠ checker) — but still produce
+the real evidence artifacts; the gates check artifacts, not process. For Phase 6
+recordings use LOCAL headless Playwright (`npm i -D @playwright/test && npx
+playwright install chromium && node scripts/record-demos.mjs`), **never an in-app
+browser connector**, then `check-recordings` + `check-a11y` + vision-verify. The
+scripts, gates, specs, and evidence are identical to the Claude Code path. See
 `docs/portability.md`.

@@ -34,6 +34,15 @@ user **confirms or corrects** before any of it is treated as the source of truth
 Reverse-engineering is a hypothesis; the human ratifies it. (This is the
 onboard-only checkpoint named in the orchestrator skill §4.)
 
+## 4b. Retrofit honesty — record it
+Legacy code enters the chain as **baseline**, but its historical **red-first
+slice history cannot be reconstructed** — there were no failing-tests-first
+commits to point at. Write the onboarded baseline slices to
+`.project-factory/retrofit.json` (`{ "slices": ["<name>", …] }`) so
+`node scripts/gate-status.mjs` flags them as **RETROFITTED, not earned**. Only
+NEW slices get genuine red-first evidence. Never present a retrofitted gate as if
+it were earned through the process.
+
 ## 5. Capability plan for NEW work only
 Existing behavior is the **baseline**; the plan covers changes/additions going
 forward, each a gated slice (`parallel-safe`/`serialize` as usual).

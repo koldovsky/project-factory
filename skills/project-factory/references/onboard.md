@@ -3,6 +3,8 @@ description: Retrofit Project Factory onto an EXISTING codebase — detect the s
 argument-hint: "[--no-reverse]"
 ---
 
+<!-- GENERATED MIRROR of commands/onboard.md. Do not edit here — edit the canonical file and run `node scripts/sync-skill-refs.mjs`. Bundled so the skill is self-contained (standalone + plugin). -->
+
 # /project-factory:onboard — adopt an existing repo
 
 Bring an existing codebase under spec-driven control **without clobbering it**.

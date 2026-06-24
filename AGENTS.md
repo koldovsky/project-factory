@@ -10,6 +10,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 > with `AGENTS.md` + the `project-factory` skill as the portable core. See
 > [`docs/portability.md`](docs/portability.md) and the README for install per tool.
 
+**Maintaining the skill:** `skills/project-factory/` is self-contained — its
+`references/` holds generated mirrors of the canonical orchestration docs
+(`MASTER-PROMPT.md`, `LOOP.md`, `checklists/quality-gates.md`,
+`commands/{init,onboard}.md`). After editing any of those, run
+`node scripts/sync-skill-refs.mjs` to refresh the mirrors. `--check` fails if
+they are stale (wire it into CI if you add one).
+
 Use `docs/requirements.md` to understand the requirements for the project.
 
 ## Project Handoff Protocol

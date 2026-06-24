@@ -80,6 +80,7 @@ for (const mf of walk(PATHS.qaDir, (f) => f === "manifest.json")) {
     else if (vsize < 0) fail(id, `video missing on disk: ${video}`);
     else if (!videoOk) fail(id, `video too small (${vsize}B < ${MIN_BYTES}B) — did it actually record? ${video}`);
     if (!shotOk) warn(id, `screenshot missing: ${r.screenshot ?? "(none listed)"}`);
+    if (r.status === "pending" || r.pending === true) fail(id, `${id}: status is "pending" — recordings-pending / smoke placeholders are NOT evidence for G6/G7`);
     if (!asserted) fail(id, `${id}: clip is not marked "asserted: true" — the recorded flow did not validate its FRs`);
     if (vision === null && flags.has("--require-vision")) fail(id, `${id}: no vision verdict (run check-vision / the vision-verify workflow)`);
     if (visionOk === false) fail(id, `${id}: vision verdict is not met+readable (${JSON.stringify(vision)})`);

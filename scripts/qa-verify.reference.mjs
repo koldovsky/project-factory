@@ -1,4 +1,4 @@
-// REFERENCE IMPLEMENTATION (proven in the Ordering & Fulfillment Platform).
+// REFERENCE IMPLEMENTATION (proven on a real production delivery).
 // Copy to scripts/qa-verify.mjs in the new project and adapt the `commands`
 // list to the npm scripts that exist. Runs the whole validation battery and
 // writes a markdown evidence report to docs/qa/automated-verification-latest.md.

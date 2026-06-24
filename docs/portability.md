@@ -61,6 +61,30 @@ orchestration shape.
   commands) and the deterministic loop is copied in as normal project files. The
   repo becomes self-contained.
 
+## Tools without callable slash commands (Codex, etc.)
+
+Some tools (Codex, and any agent that reads `AGENTS.md` but can't invoke
+`/project-factory:init`) won't expose the commands as tools. Then:
+
+- **Execute the procedure inline.** Don't skip the loop or approximate it — follow
+  `commands/init.md` / `commands/onboard.md` (or `.project-factory/commands/` if
+  vendored) step by step. Fail fast: no feature code until the loop is installed.
+- **Recordings = local headless Playwright, NEVER an in-app/IDE browser
+  connector** (those need a sandbox surface Codex lacks):
+  ```bash
+  npm i -D @playwright/test @axe-core/playwright
+  npx playwright install chromium
+  node scripts/record-demos.mjs     # fixed-viewport, asserts FRs, settled stills
+  node scripts/check-recordings.mjs  # real video + asserted (not "pending")
+  node scripts/check-a11y.mjs        # axe, light + dark
+  # then the vision-verify pass — a fresh agent looks at each still
+  ```
+- **The gates enforce evidence regardless of tool** — `check-trajectory` (clean
+  `review-findings.json`), `check-recordings` (real video + `asserted`), the
+  ratchets. Sequential maker≠checker is fine; faking artifacts is not.
+  `node scripts/gate-status.mjs` summarizes which G0–G8 are truly green vs
+  pending/retrofitted.
+
 ## Notes
 
 - **Gemini CLI** reads `GEMINI.md`, not `AGENTS.md` — `cp AGENTS.md GEMINI.md`

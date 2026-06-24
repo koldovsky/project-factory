@@ -1,3 +1,5 @@
+<!-- GENERATED MIRROR of LOOP.md. Do not edit here — edit the canonical file and run `node scripts/sync-skill-refs.mjs`. Bundled so the skill is self-contained (standalone + plugin). -->
+
 # The Loop — Why This Framework Is Built the Way It Is
 
 > Informed by Addy Osmani's *"Loop Engineering"*

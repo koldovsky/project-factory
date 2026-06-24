@@ -27,7 +27,8 @@ is probably too weak — strengthen it until red is meaningful.
    slice's business operations (create master data → exercise the flow →
    verify persisted values → clean up). Required before a slice may archive.
 3. **Integration (Vitest, real DB)** — the cross-slice business flow
-   (e.g. order → invoice → export → reconciliation → report). Use LOCAL
+   end-to-end across modules (e.g. create a record → process it → export →
+   reconcile → report). Use LOCAL
    calendar dates for any day-bound assertion — `toISOString().slice(0,10)`
    is UTC and breaks near midnight.
 4. **E2E (Playwright)** — auth + RBAC positive AND negative (anonymous

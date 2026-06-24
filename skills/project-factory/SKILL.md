@@ -31,6 +31,14 @@ agents → `.claude/agents/`, `check-*` scripts, git hooks, CI, OpenSpec, filled
 templates) into THIS repo **before any feature work**. Never write feature code
 before the loop that guards it exists.
 
+> **If your tool can't invoke these as slash commands** (Codex exposes them as
+> prompts; some tools not at all): do NOT skip the loop and approximate it.
+> EXECUTE the procedure **inline** by following the bundled
+> [references/init.md](references/init.md) / [references/onboard.md](references/onboard.md)
+> (verbatim mirrors of the `/project-factory:*` commands, always present in this
+> skill folder). "Loop installed before feature code" is tool-independent — fail
+> fast and install it for real.
+
 ## 1. The lifecycle you drive
 
 Phases 0–8: intake/stack → requirements → baseline specs → capability plan →
@@ -38,17 +46,18 @@ per-slice loop (spec → tests(red) → implement(green) → battery → review-
 archive) → cross-cutting hardening → QA proof + recordings → global review +
 evals + release → UAT loop.
 
-**Full detail is loaded on demand — do not duplicate it here** (paths below use
-`${CLAUDE_PLUGIN_ROOT}`, the plugin root in Claude Code; in Cursor/Codex/Copilot
-read the same files from the repo root):
-- `${CLAUDE_PLUGIN_ROOT}/MASTER-PROMPT.md` — the complete 8-phase playbook.
-- `${CLAUDE_PLUGIN_ROOT}/checklists/quality-gates.md` — gates G0–G8 (commands with exit codes).
-- `${CLAUDE_PLUGIN_ROOT}/LOOP.md` — why it is built this way (nested loops, trace chain, maker≠checker).
+**Full detail is loaded on demand — do not duplicate it here.** These references
+are bundled in this skill folder, so they resolve identically whether the skill
+runs from the plugin or as a standalone `~/.claude/skills/` copy:
+- [references/master-playbook.md](references/master-playbook.md) — the complete 8-phase playbook.
+- [references/quality-gates.md](references/quality-gates.md) — gates G0–G8 (commands with exit codes).
+- [references/loop.md](references/loop.md) — why it is built this way (nested loops, trace chain, maker≠checker).
 
 ## 2. Operating rules (every phase)
 
 - **Loop first.** Deterministic checks exist before the code they guard. A red command is a STOP; fix the check, never weaken it.
 - **Maker ≠ checker.** The agent that built a slice never reviews it; review/triage/eval verdicts come from fresh agents.
+- **Gates check ARTIFACTS, not process.** The deterministic checks enforce evidence in ANY tool: `check-trajectory` needs a clean `review-findings.json`, `check-recordings` needs real videos marked `asserted`, the ratchets need real results. Without Claude Code's parallel Workflow fan-out (Codex/Copilot), run the review/eval/spec passes **sequentially with fresh context** — but you must still produce the real artifacts. You cannot satisfy a gate by writing a manifest or marking it "pending".
 - **Everything trackable.** Specs cite FR ids; tests carry `@trace FR-x`; commits carry `Slice:`/`Refs:`; the matrix is generated, never hand-written.
 - **Gates are hard.** All exit criteria pass or the phase is not done. Never archive a change before its smoke test.
 - **Test-first.** Tests are written from the spec and observed to fail (red) before implementation makes them green — never weaken a test to pass it.
@@ -94,4 +103,4 @@ Everything else runs autonomously through the gates.
 
 - [references/new-project.md](references/new-project.md) — greenfield bootstrap + phase entry.
 - [references/existing-project.md](references/existing-project.md) — retrofit + reverse-engineering an existing codebase.
-- `${CLAUDE_PLUGIN_ROOT}/MASTER-PROMPT.md`, `checklists/quality-gates.md`, `LOOP.md` — the full playbook, gates, and rationale.
+- [references/master-playbook.md](references/master-playbook.md), [references/quality-gates.md](references/quality-gates.md), [references/loop.md](references/loop.md) — the full playbook, gates, and rationale.
