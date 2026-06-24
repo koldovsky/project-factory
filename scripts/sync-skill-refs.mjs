@@ -42,7 +42,10 @@ for (const [src, out] of MIRRORS) {
     console.error(`FAIL  canonical source missing: ${src}`);
     process.exit(1);
   }
-  const want = withNote(src, readFileSync(src, "utf8"));
+  // Normalize to LF so the written mirror matches git's stored form — otherwise
+  // a Windows checkout rewrites every mirror with CRLF and shows them all as
+  // "modified" even when nothing changed.
+  const want = withNote(src, readFileSync(src, "utf8")).replace(/\r\n/g, "\n");
   const dest = join(DEST, out);
   const have = existsSync(dest) ? readFileSync(dest, "utf8") : null;
   if (check) {
