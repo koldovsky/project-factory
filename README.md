@@ -166,3 +166,8 @@ survive a stack swap; the reference scripts assume Node + Playwright.
 6. **Proof, not claims.** Every delivered behavior gets a recording; every
    fix gets a regression test; every report states what failed as plainly as
    what passed.
+
+## License
+
+[MIT](LICENSE) © 2026 Vyacheslav Koldovskyy. Use it freely — including in
+commercial and closed-source projects — provided the copyright notice is kept.
