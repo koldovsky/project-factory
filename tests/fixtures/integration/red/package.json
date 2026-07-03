@@ -1,0 +1,10 @@
+{
+  "name": "integration-red-fixture",
+  "private": true,
+  "scripts": {
+    "test:run": "echo unit tests not yet configured",
+    "test:e2e": "echo e2e not yet configured",
+    "lint": "echo lint not yet configured",
+    "build": "echo build not yet configured"
+  }
+}

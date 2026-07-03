@@ -1,0 +1,6 @@
+{
+  "check": "coverage-ratchet",
+  "metrics": ["lines"],
+  "reason": "Test fixture: a large generated module was added and excluded from testing scope; loosening the lines baseline was reviewed and approved.",
+  "approvedBy": "human-reviewer"
+}

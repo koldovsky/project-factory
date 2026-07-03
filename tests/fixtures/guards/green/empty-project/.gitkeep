@@ -1,0 +1,3 @@
+# Deliberately (near-)empty project tree: exercises the pre-phase paths —
+# check-recordings / check-trajectory warn + PASS with Scope: 0, and
+# check-eval-ratchet prints SKIP-pending (no evals/results/latest.json).

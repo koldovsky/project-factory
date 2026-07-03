@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-07-03T06:04:42.660Z",
+  "ledger": {
+    "path": "trace/ledger.jsonl",
+    "present": true,
+    "eventCount": 5,
+    "malformedLines": 0
+  },
+  "productCodePresent": false,
+  "result": "PASS",
+  "metrics": {
+    "vacuousPasses": {
+      "count": 1,
+      "events": [
+        {
+          "ts": "2026-07-01T10:10:00.000Z",
+          "check": "recordings"
+        }
+      ]
+    },
+    "notEarned": {
+      "count": 0
+    },
+    "warningTrendByClass": {
+      "trace": {
+        "firstHalf": 2,
+        "secondHalf": 0,
+        "total": 2,
+        "direction": "falling"
+      },
+      "recordings-pending": {
+        "firstHalf": 1,
+        "secondHalf": 0,
+        "total": 1,
+        "direction": "falling"
+      }
+    },
+    "retriesPerCheck": {
+      "traceability": {
+        "runs": 2,
+        "failures": 1,
+        "retries": 1
+      },
+      "recordings": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "a11y": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      },
+      "unit-tests": {
+        "runs": 1,
+        "failures": 0,
+        "retries": 0
+      }
+    },
+    "redToGreenLatency": {
+      "perCheck": {
+        "traceability": {
+          "episodes": [
+            {
+              "redAt": "2026-07-01T10:00:00.000Z",
+              "greenAt": "2026-07-01T10:05:00.000Z",
+              "ms": 300000
+            }
+          ],
+          "avgMs": 300000,
+          "stillRed": false
+        },
+        "recordings": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "a11y": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        },
+        "unit-tests": {
+          "episodes": [],
+          "avgMs": null,
+          "stillRed": false
+        }
+      },
+      "overallAvgMs": 300000
+    },
+    "waivers": {
+      "ledgerEvents": 1,
+      "contractWaivers": 0,
+      "total": 1
+    },
+    "claimDivergence": {
+      "ledgerEvents": 0,
+      "unmetContracts": 1,
+      "unmet": [
+        {
+          "reqId": "NFR-19",
+          "method": "pixel-diff"
+        }
+      ],
+      "total": 1
+    },
+    "uncommittedWork": {
+      "dirtyStreakEvents": 5,
+      "since": "2026-07-01T10:00:00.000Z",
+      "ageMs": 1200000
+    },
+    "corrections": {
+      "total": 1,
+      "open": 0,
+      "openIds": []
+    }
+  },
+  "inputs": {
+    "acceptanceContracts": 2,
+    "corrections": 1
+  }
+}

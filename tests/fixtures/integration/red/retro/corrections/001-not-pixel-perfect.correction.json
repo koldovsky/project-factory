@@ -1,0 +1,13 @@
+{
+  "id": "COR-1",
+  "ts": "2026-07-03T09:00:00.000Z",
+  "utterance": "this is not pixel perfect",
+  "contradictedClaim": "docs/current-state.md:8",
+  "mappedReqIds": ["FR-1"],
+  "gateThatShouldHaveCaught": "G6",
+  "failureMode": "vacuous-pass",
+  "failureModeSource": "explicit",
+  "source": "human",
+  "autoKey": null,
+  "disposition": null
+}

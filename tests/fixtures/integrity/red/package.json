@@ -1,0 +1,11 @@
+{
+  "name": "integrity-red-fixture",
+  "private": true,
+  "scripts": {
+    "test:run": "node scripts/run-tests.mjs",
+    "test:e2e": "echo \"e2e not yet configured\"",
+    "lint": "node scripts/lint.mjs",
+    "build": "node scripts/build.mjs",
+    "qa:verify": "node scripts/qa-verify.mjs"
+  }
+}

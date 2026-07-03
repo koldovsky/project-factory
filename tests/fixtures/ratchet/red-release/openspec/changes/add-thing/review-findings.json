@@ -1,0 +1,7 @@
+{
+  "clean": false,
+  "findings": [
+    { "id": "RF-1", "severity": "major", "summary": "unhandled error path in app()" },
+    { "id": "RF-2", "severity": "minor", "summary": "naming drift", "fixCommit": "abc1234" }
+  ]
+}

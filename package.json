@@ -1,0 +1,13 @@
+{
+  "name": "self-improving-project-factory",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Private fork of Project Factory carrying the reflection & self-improvement layer (Process-Health Ledger design). No runtime deps; tests are plain Node.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node tests/run-all.mjs"
+  }
+}

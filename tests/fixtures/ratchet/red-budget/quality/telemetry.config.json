@@ -1,0 +1,6 @@
+{
+  "warningBudgets": {
+    "recording-evidence": { "0-5": 100, "6+": 0 },
+    "*": { "0+": 25 }
+  }
+}

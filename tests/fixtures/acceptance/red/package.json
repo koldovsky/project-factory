@@ -1,0 +1,7 @@
+{
+  "name": "acceptance-red-fixture",
+  "private": true,
+  "scripts": {
+    "test:e2e": "echo \"e2e not yet configured\""
+  }
+}

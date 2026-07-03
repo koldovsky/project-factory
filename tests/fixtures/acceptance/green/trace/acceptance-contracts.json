@@ -1,0 +1,29 @@
+{
+  "generatedBy": "scripts/check-acceptance-methods.mjs",
+  "mode": "artifact",
+  "productCode": true,
+  "contracts": {
+    "FR-70": [
+      {
+        "method": "e2e",
+        "mechanism": "npm:test:e2e",
+        "artifact": "test-results/.last-run.json",
+        "status": "artifact-ok"
+      }
+    ],
+    "NFR-19": [
+      {
+        "method": "pixel-diff",
+        "mechanism": "npm:check:visual",
+        "artifact": "docs/qa/visual-diff/home/report.json",
+        "status": "artifact-ok"
+      },
+      {
+        "method": "vision-verify",
+        "mechanism": "npm:check:vision",
+        "artifact": "docs/qa/vision-report.json",
+        "status": "artifact-ok"
+      }
+    ]
+  }
+}

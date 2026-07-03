@@ -1,0 +1,7 @@
+{
+  "page": "home",
+  "score": 0.994,
+  "threshold": 0.99,
+  "breakpoints": ["1440x900", "390x844"],
+  "masks": ["#cookie-banner"]
+}

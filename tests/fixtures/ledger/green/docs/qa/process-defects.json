@@ -1,0 +1,23 @@
+{
+  "source": "ledger-report-deterministic-fallback",
+  "generatedAt": "2026-07-03T06:04:42.660Z",
+  "note": "Deterministic skeleton derived from ledger data alone. The LLM process-auditor replaces this file at phase boundaries; until then G7 keys on this fallback so API-less CI never blocks.",
+  "defects": [
+    {
+      "id": "PD-D1",
+      "class": "vacuous-pass",
+      "evidence": "Exit-0 runs with scope_n=0 while product code exists: recordings@2026-07-01T10:10:00.000Z",
+      "metric": "vacuousPasses=1",
+      "severity": "P0",
+      "proposedFix": "Render these NOT-EARNED (three-valued gate semantics); a check must never pass on an empty scope once product code exists."
+    },
+    {
+      "id": "PD-D2",
+      "class": "acceptance-contract-unmet",
+      "evidence": "Declared acceptance method(s) without a threshold-passing artifact: NFR-19(pixel-diff)",
+      "metric": "unmetContracts=1",
+      "severity": "P0",
+      "proposedFix": "Implement or human-waive each declared method (check-acceptance-methods --mode=artifact must pass)."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "integrity-green-fixture",
+  "private": true,
+  "scripts": {
+    "test:run": "node scripts/run-tests.mjs",
+    "test:e2e": "node scripts/run-e2e.mjs",
+    "lint": "node scripts/lint.mjs",
+    "build": "node scripts/build.mjs",
+    "qa:verify": "node scripts/qa-verify.mjs"
+  }
+}

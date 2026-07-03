@@ -1,0 +1,8 @@
+{
+  "$comment": "DEPS-MISSING fixture — valid config, but the capture adapter simulates an uninstalled playwright. Must exit 1 with install instructions, NEVER 0.",
+  "referenceUrl": "https://reference.example/",
+  "localUrl": "http://localhost:3000/",
+  "threshold": 0.99,
+  "settleMs": 0,
+  "breakpoints": [{ "name": "desktop", "width": 1440, "height": 900 }]
+}

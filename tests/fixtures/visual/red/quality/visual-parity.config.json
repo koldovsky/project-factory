@@ -1,0 +1,12 @@
+{
+  "$comment": "RED fixture — desktop/mobile trip the height pre-gate (+23%/+45%, the real pixel-case numbers); tablet passes the gate but scores 0.93 < 0.99.",
+  "referenceUrl": "https://reference.example/",
+  "localUrl": "http://localhost:3000/",
+  "threshold": 0.99,
+  "settleMs": 0,
+  "breakpoints": [
+    { "name": "desktop", "width": 1440, "height": 900 },
+    { "name": "mobile", "width": 390, "height": 844 },
+    { "name": "tablet", "width": 1024, "height": 768 }
+  ]
+}

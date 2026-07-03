@@ -1,0 +1,2 @@
+{"ts":"2026-07-03T10:00:00Z","event":"check","check":"check-traceability","exitCode":0,"scope_n":5,"phase":"4","warningsByClass":{"recording-evidence":3}}
+{"ts":"2026-07-03T10:00:02Z","event":"check","check":"check-recordings","exitCode":0,"scope_n":2,"phase":"4","warningsByClass":{}}

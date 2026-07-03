@@ -1,0 +1,10 @@
+{
+  "generatedBy": "scripts/check-process-ratchet.mjs --update",
+  "phase": "4",
+  "acceptanceCoverage": { "covered": 5, "declared": 5 },
+  "vacuousPasses": 0,
+  "warningBudgets": {
+    "recording-evidence": { "0-5": 100, "6+": 0 },
+    "*": { "0+": 25 }
+  }
+}

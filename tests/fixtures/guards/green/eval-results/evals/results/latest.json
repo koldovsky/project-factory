@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-07-03T00:00:00Z",
+  "threshold": 80,
+  "dimensions": { "error-clarity": 88, "tone": 80.5 },
+  "cases": [
+    { "id": "EC-1", "dimension": "error-clarity", "score": 90, "pass": true },
+    { "id": "EC-2", "dimension": "error-clarity", "score": 86, "pass": true },
+    { "id": "T-1", "dimension": "tone", "score": 80.5, "pass": true }
+  ]
+}

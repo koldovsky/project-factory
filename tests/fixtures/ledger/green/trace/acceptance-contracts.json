@@ -1,0 +1,6 @@
+{
+  "contracts": [
+    { "reqId": "NFR-19", "method": "pixel-diff", "satisfied": false, "waived": false },
+    { "reqId": "FR-1", "method": "e2e", "satisfied": true, "waived": false }
+  ]
+}

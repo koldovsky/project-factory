@@ -1,0 +1,6 @@
+{
+  "generatedBy": "scripts/ledger-report.mjs",
+  "vacuousPasses": 0,
+  "acceptanceCoverage": { "covered": 5, "declared": 5 },
+  "warningsByClass": { "recording-evidence": 3 }
+}

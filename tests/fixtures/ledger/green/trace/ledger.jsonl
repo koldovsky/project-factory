@@ -1,0 +1,5 @@
+{"ts":"2026-07-01T10:00:00.000Z","event":"check-run","check":"traceability","exitCode":1,"failures":2,"warnings":1,"warningsByClass":{"trace":1},"scope_n":12,"phase":"4","gitHead":"abc1234","dirty":true,"durationMs":900,"meta":{}}
+{"ts":"2026-07-01T10:05:00.000Z","event":"check-run","check":"traceability","exitCode":0,"failures":0,"warnings":1,"warningsByClass":{"trace":1},"scope_n":12,"phase":"4","gitHead":"abc1234","dirty":true,"durationMs":850,"meta":{}}
+{"ts":"2026-07-01T10:10:00.000Z","event":"check-run","check":"recordings","exitCode":0,"failures":0,"warnings":1,"warningsByClass":{"recordings-pending":1},"scope_n":0,"phase":"4","gitHead":"abc1234","dirty":true,"durationMs":300,"meta":{"productCode":true}}
+{"ts":"2026-07-01T10:15:00.000Z","event":"waiver","check":"a11y","exitCode":0,"failures":0,"warnings":0,"warningsByClass":{},"scope_n":1,"phase":"4","gitHead":"abc1234","dirty":true,"durationMs":10,"meta":{"waiver":true,"id":"WV-1"}}
+{"ts":"2026-07-01T10:20:00.000Z","event":"check-run","check":"unit-tests","exitCode":0,"failures":0,"warnings":0,"warningsByClass":{},"scope_n":42,"phase":"4","gitHead":"abc1234","dirty":true,"durationMs":4200,"meta":{}}

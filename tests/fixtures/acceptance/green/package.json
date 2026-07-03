@@ -1,0 +1,13 @@
+{
+  "name": "acceptance-green-fixture",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "check:visual": "node scripts/check-visual-fidelity.mjs",
+    "check:vision": "node scripts/check-vision.mjs",
+    "test": "node --test tests/"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0"
+  }
+}

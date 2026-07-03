@@ -1,0 +1,11 @@
+{
+  "$comment": "GREEN fixture — matching heights, injected score 0.996 >= 0.99 on both breakpoints.",
+  "referenceUrl": "https://reference.example/",
+  "localUrl": "http://localhost:3000/",
+  "threshold": 0.99,
+  "settleMs": 0,
+  "breakpoints": [
+    { "name": "desktop", "width": 1440, "height": 900 },
+    { "name": "mobile", "width": 390, "height": 844 }
+  ]
+}

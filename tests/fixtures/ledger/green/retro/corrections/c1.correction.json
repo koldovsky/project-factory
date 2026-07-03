@@ -1,0 +1,17 @@
+{
+  "id": "c1",
+  "utterance": "this is not pixel perfect",
+  "contradictedClaim": "pixel-perfect implementation complete",
+  "mappedReqIds": [
+    "FR-70",
+    "NFR-19"
+  ],
+  "gateThatShouldHaveCaught": "G6",
+  "failureMode": "vacuous-pass+missing-check+wrong-claim",
+  "disposition": {
+    "status": "resolved",
+    "by": "owner",
+    "ts": "2026-07-02T12:00:00Z",
+    "note": "pixel gate implemented; re-verified against reference"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "integration-green-fixture",
+  "private": true,
+  "scripts": {
+    "test:run": "node scripts/pass-tests.mjs",
+    "lint": "node scripts/pass-lint.mjs",
+    "build": "node scripts/pass-build.mjs"
+  }
+}

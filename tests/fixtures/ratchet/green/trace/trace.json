@@ -1,0 +1,6 @@
+{
+  "generatedBy": "scripts/check-traceability.mjs",
+  "links": [
+    { "id": "FR-1", "specs": ["openspec/specs/app.md"], "tests": ["tests/app.test.js"], "recordings": [] }
+  ]
+}

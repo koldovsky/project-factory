@@ -1,0 +1,18 @@
+{
+  "id": "COR-1",
+  "ts": "2026-07-02T10:15:00.000Z",
+  "utterance": "stats section is purple, live site is green",
+  "contradictedClaim": "docs/current-state.md:85",
+  "mappedReqIds": ["FR-70", "NFR-19"],
+  "gateThatShouldHaveCaught": "G6",
+  "failureMode": "missing-check",
+  "failureModeSource": "explicit",
+  "source": "human",
+  "autoKey": null,
+  "disposition": {
+    "status": "resolved",
+    "by": "koldovsky",
+    "ts": "2026-07-02T18:00:00.000Z",
+    "note": "root-caused as PD-2 (declared acceptance method had no mechanism); fixed by improve-PD-2, commit trailer Refs: PD-2"
+  }
+}
