@@ -1,0 +1,7 @@
+{
+  "name": "declared-method-green-fixture",
+  "private": true,
+  "scripts": {
+    "test:e2e": "node scripts/run-e2e.mjs"
+  }
+}

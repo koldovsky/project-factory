@@ -1,0 +1,12 @@
+{
+  "kind": "demo",
+  "results": [
+    {
+      "id": "clip-1",
+      "title": "home page flow",
+      "proof": "FR-1",
+      "video": "docs/qa/recordings/clip-1.webm",
+      "asserted": true
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "_comment": [
+    "Telemetry + process-quality configuration. Copy to quality/telemetry.config.json in the target project.",
+    "Consumed by: scripts/check-process-ratchet.mjs (warningBudgets), scripts/check-acceptance-methods.mjs (acceptanceArtifacts), scripts/ledger.mjs (telemetry).",
+    "Keys starting with '_' are documentation and are ignored by all scripts.",
+    "Design: docs/field-reports/2026-07-02-reflection-mechanism-design.md (mechanisms 1, 2 and 5)."
+  ],
+  "telemetry": {
+    "_comment": "FACTORY_TELEMETRY=off disables ledger EMISSION only. Honesty checks (vacuity flip, acceptance join, stub scan) live outside this kill switch by invariant A — they cannot be configured off here.",
+    "ledger": "trace/ledger.jsonl",
+    "killSwitchEnv": "FACTORY_TELEMETRY"
+  },
+  "acceptanceArtifacts": {
+    "_comment": [
+      "Verification-class token -> artifact resolution table for check-acceptance-methods --mode=artifact.",
+      "Tokens are the closed vocabulary from docs/requirements.template.md. Each declared method must resolve to a fresh, threshold-passing artifact — a declared method with no mechanism is the pixel-perfect failure class."
+    ],
+    "local-verifiable": { "glob": "docs/qa/automated-verification-latest.md" },
+    "vision-verify": { "glob": "docs/qa/**/manifest.json", "require": "vision.met == true && vision.readable == true" },
+    "recording": { "glob": "docs/qa/**/manifest.json", "require": "asserted == true" },
+    "visual-diff": { "glob": "docs/qa/visual-diff/*/report.json", "threshold": { "path": "score", "gte": 0.99 } },
+    "e2e": { "glob": "docs/qa/e2e-report.*" },
+    "a11y": { "glob": "docs/qa/a11y-report.*" },
+    "eval": { "glob": "evals/results/*.json" },
+    "deploy-gated": { "glob": "docs/qa/deploy-verification.md" }
+  },
+  "warningBudgets": {
+    "_comment": [
+      "Per-CLASS, per-PHASE-BAND warning budgets for check-process-ratchet. NEVER a raw total:",
+      "in the pixel-perfect run 71 of 73 warnings were benign pre-Phase-6 growth (missing recordings",
+      "before the recording phase); a raw ratchet would red honest progress and train reflexive --update.",
+      "Class names = the [class] tags printed by the check scripts' WARN lines (warningsByClass in the ledger).",
+      "Band keys: 'a-b' (phases a..b inclusive), 'a+' (phase a and later), 'a' (exactly phase a).",
+      "If the current phase cannot be parsed from docs/current-state.md, the STRICTEST matching band applies.",
+      "'*' is the default budget for classes without their own entry. Budgets can only be tightened once",
+      "baselined — check-process-ratchet --update rejects widening writes (tighten-only direction guard)."
+    ],
+    "recording-evidence": { "0-5": 100, "6+": 0 },
+    "recordings": { "0-5": 25, "6+": 0 },
+    "test-trace": { "0-3": 100, "4+": 10 },
+    "spec-mention": { "0-1": 50, "2+": 0 },
+    "plan-ownership": { "0-2": 10, "3+": 0 },
+    "requirements": { "0": 5, "1+": 0 },
+    "active-changes": { "0-6": 10, "7+": 0 },
+    "slices": { "0-3": 5, "4+": 1 },
+    "vacuous-pass": { "0+": 0 },
+    "*": { "0-5": 25, "6+": 5 }
+  }
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "vacuous-pass-not-earned",
+    "title": "A PASS over zero evidence is NOT-EARNED, never PASS",
+    "pattern": "A check exits 0 over an empty evidence base (\"Scope: 0 ...\") while product code exists, and dashboards fold SKIP into PASS — gates render green over literally nothing.",
+    "groundedIn": [
+      "docs/field-reports/2026-07-02-pixel-perfect-forensics.md (RC2: phase-graceful semantics with no phase-awareness; worst() collapses SKIP into PASS)",
+      "docs/field-reports/2026-07-02-course-field-study.md (P0-1: close the vacuous-pass loophole)"
+    ],
+    "installPayload": "lessons/vacuous-pass-not-earned/payload/agents-block.md",
+    "fixtures": "lessons/vacuous-pass-not-earned/run-fixtures.mjs",
+    "version": 1
+  },
+  {
+    "id": "declared-method-needs-mechanism",
+    "title": "Every declared acceptance method must resolve to an executable mechanism",
+    "pattern": "A requirement declares its verification method (pixel-diff, e2e, ...) but no tool implements it — a spec restating the requirement, or an echo-stub npm script, is treated as chain satisfaction and the build proceeds on a phantom acceptance method.",
+    "groundedIn": [
+      "docs/field-reports/2026-07-02-pixel-perfect-forensics.md (RC1: acceptance method never operationalized; test:e2e = echo stub = green)",
+      "docs/field-reports/2026-07-02-reflection-mechanism-design.md (mechanism 2: acceptance-contract auditor, hard from day one)"
+    ],
+    "installPayload": "lessons/declared-method-needs-mechanism/payload/agents-block.md",
+    "fixtures": "lessons/declared-method-needs-mechanism/run-fixtures.mjs",
+    "version": 1
+  },
+  {
+    "id": "done-claims-need-evidence",
+    "title": "Done-claims in prose must carry resolvable evidence pointers",
+    "pattern": "Strong completion language (\"Convergence reached\", \"verification-only\", \"Overall result: Pass\") appears in handoff docs with no resolvable evidence artifact behind it — maker narrative supplies the verdict that the gates never computed.",
+    "groundedIn": [
+      "docs/field-reports/2026-07-02-pixel-perfect-forensics.md (RC6: DONE declared by unaudited maker narrative; current-state.md:85 vs :91)",
+      "docs/field-reports/2026-07-02-course-field-study.md (rule: convert every cared-about property from prompt instruction into an artifact-existence check with an exit code)"
+    ],
+    "installPayload": "lessons/done-claims-need-evidence/payload/agents-block.md",
+    "fixtures": "lessons/done-claims-need-evidence/run-fixtures.mjs",
+    "version": 1
+  }
+]

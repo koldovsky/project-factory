@@ -1,0 +1,18 @@
+{
+  "$comment": "Visual-fidelity acceptance config — copy to quality/visual-parity.config.json in the target project and edit. Consumed by scripts/check-visual-fidelity.mjs (reference: scripts/check-visual-fidelity.reference.mjs). referenceUrl is the ground-truth page (the live site being replicated); localUrl is the build under test. The check captures both at every breakpoint, hard-fails when page-height delta exceeds maxHeightDeltaPct (structural mismatch — pixel diffing is pointless), then runs a masked pixel diff that must score >= threshold on EVERY breakpoint. Masks and dynamicRegions hide regions that legitimately differ (cookie banners, carousels, timestamps); every applied mask is recorded in docs/qa/visual-diff/<breakpoint>/report.json so masking stays auditable, never silent.",
+  "referenceUrl": "https://www.example.com/",
+  "localUrl": "http://localhost:3000/",
+  "threshold": 0.99,
+  "settleMs": 1500,
+  "maxHeightDeltaPct": 2,
+  "breakpoints": [
+    { "name": "desktop", "width": 1440, "height": 900 },
+    { "name": "mobile", "width": 390, "height": 844 }
+  ],
+  "masks": [
+    { "page": "*", "selectorOrRect": ".cookie-banner" }
+  ],
+  "dynamicRegions": [
+    { "page": "/", "selectorOrRect": { "x": 0, "y": 0, "width": 0, "height": 0 } }
+  ]
+}

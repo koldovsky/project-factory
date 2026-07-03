@@ -1,0 +1,20 @@
+{
+  "_template": true,
+  "_comment": [
+    "PROCESS-QUALITY BASELINE — structure documentation only. Do NOT copy this file into",
+    "quality/process-baseline.json by hand: a baseline is EARNED, never installed.",
+    "It is created and tightened exclusively by `node scripts/check-process-ratchet.mjs --update`",
+    "after a truthful green run. While this file is absent (or still carries \"_template\": true,",
+    "which the ratchet treats as absent), check-process-ratchet renders",
+    "'Result: NOT-EARNED (pending baseline)' — it never prints PASS it has not earned.",
+    "Direction guard: --update rejects any write that lowers acceptanceCoverage, raises",
+    "vacuousPasses, or widens/removes a warningBudgets entry (exit 1). Loosening requires a",
+    "human waiver artifact under docs/qa/waivers/ plus an owner-signed RULES-CHANGELOG.md entry.",
+    "Design: docs/field-reports/2026-07-02-reflection-mechanism-design.md (mechanism 5)."
+  ],
+  "generatedBy": "scripts/check-process-ratchet.mjs --update",
+  "phase": "unknown",
+  "acceptanceCoverage": { "covered": 0, "declared": 0 },
+  "vacuousPasses": 0,
+  "warningBudgets": {}
+}
