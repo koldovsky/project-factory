@@ -7,10 +7,17 @@
 ## Last Updated
 
 - **Date and time:** {{YYYY-MM-DD HH:MM:SS}} ({{TIMEZONE}})
-- **Current phase:** {{e.g. Phase 4 — implementing slice 3 of 7}}
+- **Current phase:** Phase {{N}}
+- **Last completed gate:** G{{N}}
 - **Active change:** {{openspec change name or "none"}}
 - **Progress:** {{2-6 sentences: what is done, validated, archived}}
 - **Next task:** {{the exact next action a fresh session should take}}
+- **Claims:**
+  - {{each "done"/"verified" claim, one per line}} — evidence: {{path, e.g. `docs/qa/visual-diff/2026-07-02/report.json`}}
+
+> This header is machine-read: keep the exact formats `Phase <N>` and `G<N>`,
+> and give every done/verified claim an evidence path — `gate-status`
+> hard-fails on divergence between this header and computed gate status.
 
 ## Source Of Truth
 

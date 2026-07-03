@@ -1,3 +1,65 @@
+# Self-Improving Project Factory
+
+**Private fork of Project Factory** — the multi-agent
+SDD delivery framework — extended with a **reflection & self-improvement
+layer**: the factory now measures its own process with the same exit-coded
+rigor it applies to the product, turns human corrections into artifacts no
+gate can pass over, and propagates earned lessons into the next project's
+gates. The layer is grounded in three field studies in this repo:
+[the reflection mechanism design](docs/field-reports/2026-07-02-reflection-mechanism-design.md)
+(the winning "Process-Health Ledger" design, 8 mechanisms, 12-step plan),
+[the pixel-perfect forensics](docs/field-reports/2026-07-02-pixel-perfect-forensics.md)
+(the motivating failure: a run that printed "Pass" over an acceptance method
+it never executed), and
+[the 13-project course field study](docs/field-reports/2026-07-02-course-field-study.md).
+
+## What is new in this fork
+
+The eight mechanisms (each shipped with an executed red→green proof under
+`tests/`; run `npm test`):
+
+1. **Process-health ledger** (`ledger.mjs`) — every check run appends
+   `{check, exitCode, scope_n, phase, warningsByClass, …}` to
+   `trace/ledger.jsonl`; fail-open telemetry whose *consumers* are hard gates.
+2. **Acceptance-contract auditor** (`check-acceptance-methods.mjs`) — joins
+   every declared verification tag to a real mechanism (G3, existence) and a
+   fresh threshold-passing artifact (G4+, artifact); the pixel-case killer,
+   hard from day one.
+3. **Three-valued gate semantics** — PASS / NOT-EARNED / FAIL + explicit
+   SKIP-pending; absence of evidence never renders as success, and no
+   overall "Pass" may sit on a NOT-EARNED constituent.
+4. **Correction intake** (`correct.mjs`) — a user's "this is not pixel
+   perfect!" becomes `retro/corrections/*.correction.json`; undispositioned
+   corrections are red OPEN-CORRECTION lines on every gate.
+5. **Process ratchet with tighten-only direction guard**
+   (`check-process-ratchet.mjs` + retrofitted coverage/eval ratchets) —
+   per-class phase-aware warning budgets; any loosening `--update` is
+   auto-rejected and requires a waiver artifact + owner-signed
+   `RULES-CHANGELOG.md` row.
+6. **Reflection pass** — deterministic digest (`ledger-report.mjs` →
+   `docs/qa/process-health.md`) always; LLM `process-auditor` (plain
+   subagent, maker≠checker) at phase boundaries, on demand, and at
+   abandonment/handover → `docs/qa/process-defects.json`.
+7. **Bounded self-improvement queue** — accepted defects become
+   `openspec/changes/improve-PD-x/` proposals with the exact diff, an
+   EXECUTED red→green proof, and one-revert rollback; human-approved, and
+   the next retro verifies the metric actually moved (else auto-flagged for
+   revert). Promotion ladder lives in `RULES-CHANGELOG.md`.
+8. **Integrity lock + lessons library** (`check-factory-integrity.mjs`,
+   `lessons/`) — gate-bearing scripts are hash-locked at post-adaptation G0
+   (drift without an approved `Refs: PD-x` commit = hard red); proven
+   lessons upsert into every new project's `AGENTS.md` at init/onboard.
+
+Also new: `check-visual-fidelity.mjs` (the pixel-parity gate the motivating
+failure lacked), the operator guide in
+[docs/self-improvement.md](docs/self-improvement.md), and the
+non-negotiable invariant: honesty checks are gate fixes with **no
+off-switch** — `FACTORY_TELEMETRY=off` disables telemetry emission only.
+
+---
+
+Everything below is the upstream framework this fork builds on.
+
 # Project Factory — Multi-Agent SDD Delivery Framework
 
 A reusable, multi-agent framework for building business applications with spec-driven

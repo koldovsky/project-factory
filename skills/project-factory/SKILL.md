@@ -63,7 +63,9 @@ runs from the plugin or as a standalone `~/.claude/skills/` copy:
 - **Test-first.** Tests are written from the spec and observed to fail (red) before implementation makes them green — never weaken a test to pass it.
 - **Evals are the bar.** Output evals + trajectory evals decide quality; recordings illustrate.
 - **Validate the rendered result, not just the code and the DOM.** Structural tests and assertions are blind to rendering — an inert control that still renders, or AA-borderline text, passes them all. For any UI: recordings must *assert* the FRs they show, gate with `check-a11y` (light+dark) AND the `vision-verify` workflow (a fresh agent looks at the settled still); fix → re-record → re-verify until met.
-- **Honest reporting.** If something fails, say so with the output. Every "done" points at a test run, recording, or validation log.
+- **Honest reporting.** If something fails, say so with the output. Every "done" points at a test run, recording, or validation log. Absence of evidence renders `NOT-EARNED` (or explicit `SKIP-pending` pre-phase), never PASS.
+- **Corrections are artifacts.** A user contradiction of a factory claim becomes `retro/corrections/*.correction.json` — deterministic detectors (`node scripts/correct.mjs --detect`) are primary; `npm run correct -- "<utterance>"` is your best-effort backup when you see the contradiction in chat. Undispositioned corrections are red OPEN-CORRECTION lines on every gate.
+- **Maker ≠ checker applies to the process too:** you never author retro artifacts (`docs/qa/process-defects.json`, corrections dispositions, improvement proposals' verdicts) about your own work — the `process-auditor` does.
 - **Error-surface.** No user input may produce a generic 500; no external call may fail silently.
 - **Model/effort tiers.** Cheap models for mechanical work; the strongest for verification/judgment (review-gate, eval-judge, trajectory-eval).
 - **Ask only at checkpoints** (§4). Otherwise run autonomously, gate by gate.
@@ -75,9 +77,26 @@ Delivered into the project by `init`/`onboard`, then dispatched by you:
 - **Subagents** (plugin-native `agents/`, also delivered to `.claude/agents/` by
   init): `requirements-analyst`, `spec-writer`, `capability-implementer`,
   `test-engineer`, `code-reviewer`, `security-reviewer`, `spec-compliance-auditor`,
-  `qa-documenter`, `bug-triage-analyst`, `eval-judge`, `vision-judge`.
+  `qa-documenter`, `bug-triage-analyst`, `eval-judge`, `vision-judge`,
+  `process-auditor`.
 - **Workflows** (`.claude/workflows/`): `spec-pipeline`, `review-gate`,
   `eval-suite`, `trajectory-eval`, `vision-verify`, `uat-triage`.
+
+Two dispatch flows the fork adds (full detail in the master playbook's
+"process retro" section):
+
+- **Retro flow** — at every phase gate, on demand, and at abandonment or
+  handover: `node scripts/ledger-report.mjs` (deterministic digest), then
+  dispatch **`process-auditor` as a plain subagent — NEVER a Workflow** (the
+  confirmed workflow-args bug silently drops args; a silent no-op retro is
+  worse than none). It writes `docs/qa/process-defects.json`; accepted
+  defects become `openspec/changes/improve-PD-x/` proposals that a human
+  approves before any diff is applied (`Refs: PD-x` commit; next retro
+  verifies the metric moved).
+- **Correct flow** — on any user contradiction of a factory claim:
+  `npm run correct -- "<utterance>"` (backup to the deterministic
+  detectors); the correction stays red on every gate until a human
+  dispositions it.
 
 > **Workflow caveat (Claude Code):** if a Workflow runs 0 agents / returns `{}`
 > when you passed `args`, the args did not reach the script (a harness bug seen

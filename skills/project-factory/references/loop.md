@@ -111,6 +111,58 @@ scope); the `trajectory-eval` workflow judges what it can't (process order, no
 test weakened, no scope drift) with a fresh judge — never claiming the
 deterministic check can verify test-first ordering it cannot.
 
+## The reflection loop (process quality as exit-coded artifacts)
+
+The three nested loops guard the **product**. This fork adds a fourth loop
+that guards the **process** — because the field evidence showed a run can
+pass every product loop while never executing its own declared acceptance
+method. Process quality becomes the same thing product quality already is:
+an artifact stream with exit codes.
+
+```
+gate/battery/hook run ──emit──▶ trace/ledger.jsonl        (append-only, fail-open)
+                       ──digest─▶ ledger-report → docs/qa/process-health.md
+                                                + trace/process-health.json
+  phase boundary / on demand / ──▶ process-auditor (fresh plain subagent,
+  abandonment or handover          maker ≠ checker; reads ONLY digest+reports)
+                       ──emits──▶ docs/qa/process-defects.json  {PD-x, evidence,
+                                                        severity, proposedFix}
+  accepted defect ──▶ openspec/changes/improve-PD-x/  (exact diff, expected
+                      metric movement, EXECUTED red→green proof, one-revert
+                      rollback)
+  human approves ──▶ single commit `Refs: PD-x` ──▶ next retro measures
+                      whether the metric actually moved; no movement =
+                      auto-flagged for revert
+```
+
+- **The ledger** (`scripts/ledger.mjs`) records every check run —
+  `{ts, event, check, exitCode, scope_n, phase, warningsByClass, gitHead,
+  dirty}`. `scope_n` is load-bearing: it makes "PASS on 0 clips" machine-
+  distinguishable from an earned PASS. Emission is fail-open and soft; its
+  **consumers** (the honesty checks below) are hard.
+- **Corrections** are first-class: `npm run correct -- "<utterance>"` (plus
+  deterministic detectors for waiver creation and UAT-bug-vs-passed-gate)
+  appends `retro/corrections/*.correction.json`; an undispositioned
+  correction is a red line on every gate until a human dispositions it.
+- **The promotion ladder** (`RULES-CHANGELOG.md`): every new check enters
+  `experimental` → `soft` → `hard`, promoted only after ≥ 2 truthful runs
+  with 0 false positives and never without an executed red→green proof.
+  Hard→soft demotion requires an owner-signed entry; unsigned drift on a
+  gate-bearing script is tamper evidence (`check-factory-integrity`).
+- **Lessons propagate:** an earned failure exports as a human-reviewed PR to
+  `lessons/` whose review EXECUTES the lesson's red→green fixtures; the next
+  project's `init`/`onboard` upserts the lesson into its `AGENTS.md` — the
+  failure one run survived becomes a gate the next run cannot skip.
+
+**THE INVARIANT (no off-switch):** the honesty checks — the vacuity flip
+(scope 0 + product code = NOT-EARNED), the acceptance-contract join, the
+echo-stub scan, and the claim-divergence check — are **gate fixes, not
+"reflection"**. They live inside the battery, and no reflection kill switch
+touches them. `FACTORY_TELEMETRY=off` disables ledger **emission only**;
+it cannot disable a single honesty check. And no hard gate ever keys on
+LLM-produced content: the LLM layer proposes, humans approve, deterministic
+checks enforce.
+
 ## Anti-patterns the framework explicitly counters
 
 - **Self-grading** — *"the model that wrote the code is way too nice grading

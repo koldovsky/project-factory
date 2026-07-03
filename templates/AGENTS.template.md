@@ -104,6 +104,21 @@ node scripts/check-eval-ratchet.mjs   # once evals exist — graded-quality bar
 Do not archive OpenSpec changes before implementation AND a real-DB smoke
 test pass. Keep `.env.local` private; never commit or print it.
 
+## Process honesty (non-negotiable)
+
+- Absence of evidence is NEVER success. A gate whose evidence is missing while
+  product code exists is **NOT-EARNED**, not PASS — and qa-verify will not
+  print "Overall result: Pass" over a NOT-EARNED constituent.
+- Never stub a battery script (`echo … not yet configured` + exit 0 launders
+  a red into a green). A missing capability must FAIL with instructions for
+  installing it.
+- Every "done"/"verified" claim carries an evidence path (report, diff
+  artifact, recording) — in `docs/current-state.md` Claims and in handoffs.
+  Unbacked claims are treated as false.
+- When a human contradicts a claimed result ("this is not pixel perfect!"),
+  record it as a correction: `npm run correct -- "<utterance>"`. Open
+  corrections render red at every gate until dispositioned.
+
 ## Evals (graded quality, not just correctness)
 
 Tests assert exact results; evals grade *quality* a unit test can't — error
@@ -124,3 +139,14 @@ clarity, empty-state usability, copy tone — scored 0-100 against a rubric.
 - Database: {{DB_NOTES}}
 - Email: sandbox senders (e.g. `resend.dev`) deliver only to the provider
   account owner — verify a real domain before UAT.
+
+<!-- BEGIN-FACTORY-LESSONS -->
+<!--
+  Managed region: `project-factory:init` / `:onboard` upsert cross-project
+  lesson blocks here, each wrapped in its own BEGIN-LESSON:<id> /
+  END-LESSON:<id> markers. Manual edits INSIDE a lesson block are preserved
+  per-block on upsert; blocks are only replaced when the lesson itself is
+  updated upstream. Do not remove the outer FACTORY-LESSONS markers —
+  without them, upserts re-append lessons at the end of the file.
+-->
+<!-- END-FACTORY-LESSONS -->

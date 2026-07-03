@@ -39,7 +39,18 @@ playbook assigns them. The user has opted into multi-agent orchestration.
   minimum.
 - **Honest reporting:** if something fails, say so with the output. Never
   report success you have not verified. Every "done" claim must point at a
-  test run, a recording, or a validation log.
+  test run, a recording, or a validation log. Checks render three-valued:
+  absence of evidence is `NOT-EARNED` (or explicit `SKIP-pending` pre-phase),
+  never PASS — and no overall "Pass" may sit on a NOT-EARNED constituent.
+- **Corrections are artifacts, not conversation.** When the user contradicts
+  a claim the factory made ("this is not pixel perfect!"), that signal must
+  become `retro/corrections/*.correction.json`. The deterministic detectors
+  (waiver creation, UAT bug filed against a passed gate — run via
+  `node scripts/correct.mjs --detect`) are the PRIMARY intake; as best-effort
+  backup, when you see such a contradiction in chat, run
+  `npm run correct -- "<the user's words>"` yourself, mapping the claim/
+  requirement ids/gate if you can. An undispositioned correction renders as
+  a red OPEN-CORRECTION line on every gate until a human dispositions it.
 - **Error-surface principle:** no user input error may produce a generic 500;
   no external call (email, file export, third-party API) may fail silently.
   Build the inline-error pattern (`?formError=` + banner component, or the
@@ -51,7 +62,9 @@ playbook assigns them. The user has opted into multi-agent orchestration.
   settled still: `{met, readable}`); recordings must ASSERT the FRs they show;
   fix → re-record → re-verify until met. axe alone is insufficient — pair it with
   the vision pass.
-- **Ask only at checkpoints.** Phases 1 and 3 each end with a user approval.
+- **Ask only at checkpoints.** Phases 1 and 3 each end with a user approval,
+  and **improvement approval** (see "The process retro" below) is the third
+  named checkpoint: no process-improvement diff is ever applied without it.
   Everything else is autonomous; batch questions, don't dribble them.
 - **Model & effort tiers (cost discipline).** Match model/effort to the job:
   cheap + low effort for mechanical work (scaffolding, doc generation, the
@@ -357,6 +370,47 @@ bug report:
 
 **Gate G8** → done when every reported bug has a verdict, every confirmed
 defect has a fix + regression test + recording, and production is verified.
+
+---
+
+## The process retro (phase gates · on demand · abandonment/handover)
+
+The factory audits its own process the way it audits the product. Run a
+retro at **every phase gate (G4 per slice batch, G5, G6, G7)**, **on demand**
+(the user asks, or a correction lands), and — critically — **at abandonment
+or handover**: if this delivery stops before G7 for any reason, the retro
+runs BEFORE the handoff commit. Most failed runs never reach G7; a G7-only
+retro would never fire.
+
+1. **Digest first (deterministic, free):** `node scripts/ledger-report.mjs`
+   regenerates `docs/qa/process-health.md` + `trace/process-health.json`
+   from `trace/ledger.jsonl` (vacuous passes, warning trends, retries,
+   red→green latency, waivers, claim divergence, uncommitted-work age).
+2. **Dispatch the auditor:** run `agents/process-auditor.md` as a **plain
+   subagent — NEVER via the Workflow tool** (the confirmed workflow-args bug
+   silently drops args and returns `{}`; a silent no-op retro is worse than
+   none). Maker ≠ checker applies to the process itself: the auditor is a
+   fresh agent, and **you — the orchestrator — never author retro artifacts
+   about your own work.** It reads ONLY the digest + `docs/qa/` reports +
+   corrections, and writes `docs/qa/process-defects.json`
+   (`{id: PD-x, class, evidence, metric, severity, proposedFix}`). If no LLM
+   is available (API-less CI), the deterministic skeletal fallback from
+   `ledger-report` satisfies G7 — the gate never blocks on an API key.
+3. **Improvement queue (bounded, human-gated):** each accepted defect
+   becomes `openspec/changes/improve-PD-x/` from
+   `templates/retro/improvement.template.md` — the exact diff, the expected
+   metric movement, an **EXECUTED red→green proof** (a fixture that fails +
+   one that passes, run before approval; no decorative checks enter the gate
+   set), and a one-revert rollback plan.
+4. **Improvement approval (named human checkpoint):** present the proposal;
+   the human approves; apply as a **single commit** carrying `Refs: PD-x`.
+   Never batch unrelated improvements into one commit — one revert must undo
+   one improvement.
+5. **Metric-movement verification (next retro):** the following retro checks
+   whether each applied improvement's expected metric actually moved. An
+   improvement whose metric did not move is **auto-flagged for revert** in
+   the new defects file — improvements must earn their place, exactly like
+   checks on the promotion ladder (`RULES-CHANGELOG.md`).
 
 ---
 

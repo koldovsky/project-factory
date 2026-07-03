@@ -11,6 +11,20 @@ every command must exit 0. Judgment criteria (reviews, sign-offs) sit ON TOP
 of green commands, never instead of them. A red command is a STOP; fixing
 the check is allowed, weakening or bypassing it is not.
 
+**Gates are three-valued.** Checks print `PASS`, `FAIL`, `NOT-EARNED`, or
+`SKIP-pending` — absence of evidence is never success. Pre-phase emptiness
+renders as an explicit `SKIP-pending`; emptiness once product code exists
+renders as `NOT-EARNED`, and no overall "Pass" may be printed over a
+NOT-EARNED constituent.
+
+**Ratchets are tighten-only.** Every baseline under `quality/`
+(coverage, eval, process) moves only via its check's `--update` and only in
+the tightening direction — a loosening `--update` is auto-rejected (exit 1,
+baseline untouched). The ONLY way to loosen is a waiver artifact under
+`docs/qa/waivers/` naming the check and metric(s), plus an owner-signed row
+in `RULES-CHANGELOG.md`; a waived loosening still prints a loud WARN. Every
+waiver is itself a correction event — it never disappears into silence.
+
 ## G0 — Scaffold & environment
 
 ```bash
@@ -51,9 +65,25 @@ node scripts/check-traceability.mjs        # spec-mention check: every MVP FR ci
 
 ## G3 — Capability plan
 
+```bash
+node scripts/check-acceptance-methods.mjs --mode=existence
+```
+
 - [ ] `docs/mvp-capability-plan.md` complete: slice table, dependency graph,
       per-slice scope/DoD/risks, FR coverage table proving no gaps/duplicates.
 - [ ] Dependency graph is acyclic; critical path identified.
+- [ ] **Acceptance-contract existence check green:** every Verification tag
+      declared on an FR/NFR in `docs/requirements.md` (closed vocabulary:
+      `local-verifiable | pixel-diff | vision-verify | recording | e2e | a11y
+      | eval | deploy-gated`) resolves to a REAL, non-echo-stub mechanism in
+      this repo. **Red means a declared acceptance method has no mechanism**
+      — a phantom method the build would otherwise "pass" without ever
+      running (the pixel-perfect failure). On red the check auto-drafts
+      `trace/missing-gate-candidates/<method>.md` (name, threshold parsed
+      from the requirement text, reference URL, breakpoints/masks
+      placeholders): implement that check, or human-waive it via
+      `docs/qa/waivers/`, BEFORE Phase 4 may start. The build cannot legally
+      enter the autonomous loop with a phantom acceptance method.
 - [ ] **User approved the plan** (checkpoint 2).
 
 ## G4 — Per slice (repeat for every slice)
@@ -63,6 +93,9 @@ npm run lint && npm run test:run && npm run build
 npx openspec validate --all --strict
 node scripts/check-traceability.mjs        # ticked tasks, FR chain, @trace coverage
 node scripts/check-trajectory.mjs          # review evidence clean, Slice: trailer, scope
+node scripts/check-acceptance-methods.mjs --mode=artifact   # declared methods -> fresh, threshold-passing evidence
+node scripts/check-process-ratchet.mjs     # EXPERIMENTAL — run WITHOUT --strict until promoted (RULES-CHANGELOG.md)
+node scripts/check-factory-integrity.mjs   # gate-bearing scripts unchanged, or changed via an approved Refs: PD-x commit
 ```
 
 - [ ] Change folder validated strictly before implementation started.
@@ -102,6 +135,18 @@ npm run test:coverage && node scripts/check-coverage-ratchet.mjs --update
 
 ## G6 — QA proof pack
 
+```bash
+node scripts/check-acceptance-methods.mjs --mode=artifact
+node scripts/check-process-ratchet.mjs     # experimental — no --strict yet
+node scripts/check-factory-integrity.mjs
+```
+
+- [ ] **Every declared acceptance method has produced its artifact** —
+      artifact mode joins each Verification tag to a fresh, threshold-passing
+      evidence file (e.g. a pixel-fidelity NFR →
+      `docs/qa/visual-diff/*/report.json` with score ≥ threshold via
+      `node scripts/check-visual-fidelity.mjs`, AND a vision report with
+      `met:true`). Spec text restating the requirement does not count.
 - [ ] Traceability matrix: every MVP FR/NFR has implementation + test +
       evidence cells filled (or an explicit reason).
 - [ ] Manual test plan executable by a non-developer; demo script written.
@@ -137,11 +182,30 @@ npm run qa:verify
 node scripts/check-traceability.mjs --release --strict-tests --strict-recordings
 node scripts/check-traceability.mjs --check-fresh
 node scripts/check-trajectory.mjs --release --check-fresh
+node scripts/check-acceptance-methods.mjs --mode=artifact
+node scripts/check-process-ratchet.mjs --release   # experimental — no --strict yet; --release also reds open review findings
+node scripts/check-factory-integrity.mjs
+node scripts/correct.mjs --check           # zero undispositioned corrections
 npm audit --audit-level=high
 ```
 
 - [ ] Global `review-gate` run over the whole codebase; all confirmed
       findings fixed; commands green.
+- [ ] **Process-defects reviewed:** `docs/qa/process-defects.json` exists
+      (authored by the `process-auditor` retro, or the deterministic
+      `ledger-report` fallback when no LLM is available) and every P0 defect
+      is resolved or explicitly waived (`docs/qa/waivers/`). A missing
+      defects file is a red — the release retro is part of the release.
+- [ ] **No OPEN corrections:** every `retro/corrections/*.correction.json`
+      carries a disposition (`resolved | waived | invalid`). An
+      undispositioned correction renders as a red OPEN-CORRECTION line no
+      gate may pass over.
+- [ ] **Committed-evidence boundary:** every claim in
+      `docs/current-state.md` and the release report points at evidence that
+      is COMMITTED (reports, recordings, baselines, ledger, lock). Evidence
+      that exists only in a working tree does not exist at G7 — CI re-running
+      the committed checks is the out-of-repo anchor that makes local claims
+      verifiable.
 - [ ] Eval ratchet green (`check:eval`, part of `qa:verify`): no dimension
       dropped below the committed baseline.
 - [ ] Trajectory: `check-trajectory --release` green; `trajectory-eval`
