@@ -183,6 +183,7 @@ if (flags.has("--check-fresh")) {
 
 for (const w of warnings) console.warn(`WARN  [${w.check}] ${w.msg}`);
 for (const f of failures) console.error(`FAIL  [${f.check}] ${f.msg}`);
-console.log(`\ntrajectory: ${slices.length} slice(s) audited — ${failures.length} failure(s), ${warnings.length} warning(s)`);
+console.log(`\nScope: ${slices.length} archived slice(s)`);
 if (!flags.has("--check-fresh")) console.log(`wrote ${PATHS.reportOut} and ${PATHS.jsonOut}`);
+console.log(`Result: ${failures.length ? "FAIL" : "PASS"}${warnings.length ? `, ${warnings.length} warning(s)` : ""}`);
 process.exit(failures.length ? 1 : 0);

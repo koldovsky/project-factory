@@ -5,7 +5,24 @@
 //   2. ESLint on staged JS/TS files
 //   3. tsc --noEmit (whole project, but incremental and fast)
 //   4. traceability validator (fast, pure file parsing)
-import { execSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+
+// Fail-open process-health telemetry (reflection design, mechanism 1): append
+// a hook-run event with the final exit code to trace/ledger.jsonl. Ledger
+// errors are swallowed — telemetry must NEVER block a commit.
+process.on("exit", (code) => {
+  try {
+    if (!existsSync("scripts/ledger.mjs")) return;
+    spawnSync(
+      process.execPath,
+      ["scripts/ledger.mjs", "emit", JSON.stringify({ event: "hook-run", check: "pre-commit", exitCode: code ?? 0 })],
+      { stdio: "ignore" },
+    );
+  } catch {
+    /* fail-open */
+  }
+});
 
 const run = (cmd, opts = {}) => execSync(cmd, { stdio: "inherit", ...opts });
 const capture = (cmd) => execSync(cmd, { encoding: "utf8" }).trim();

@@ -4,8 +4,24 @@
 // at least one trace reference — either a `Refs:` trailer with FR/NFR/BUG ids
 // or a `Slice:` trailer naming the OpenSpec change. Docs/test/chore commits
 // are exempt. This makes `git log --grep "FR-24"` a complete audit trail.
-import { execSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { execSync, spawnSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+
+// Fail-open process-health telemetry (reflection design, mechanism 1): append
+// a hook-run event with the final exit code to trace/ledger.jsonl. Ledger
+// errors are swallowed — telemetry must NEVER block a commit.
+process.on("exit", (code) => {
+  try {
+    if (!existsSync("scripts/ledger.mjs")) return;
+    spawnSync(
+      process.execPath,
+      ["scripts/ledger.mjs", "emit", JSON.stringify({ event: "hook-run", check: "commit-msg", exitCode: code ?? 0 })],
+      { stdio: "ignore" },
+    );
+  } catch {
+    /* fail-open */
+  }
+});
 
 const msgFile = process.argv[2];
 const msg = readFileSync(msgFile, "utf8");

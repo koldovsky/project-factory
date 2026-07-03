@@ -124,5 +124,6 @@ if (flags.has("--check-fresh")) {
 
 for (const w of warnings) console.warn(`WARN  [${w.id}] ${w.msg}`);
 for (const f of failures) console.error(`FAIL  [${f.id}] ${f.msg}`);
-console.log(`\nrecordings: ${clipCount} clip(s) checked — ${failures.length} failure(s), ${warnings.length} warning(s)`);
+console.log(`\nScope: ${clipCount} clip(s) across ${manifestCount} manifest(s)`);
+console.log(`Result: ${failures.length ? "FAIL" : "PASS"}${warnings.length ? `, ${warnings.length} warning(s)` : ""}`);
 process.exit(failures.length ? 1 : 0);
