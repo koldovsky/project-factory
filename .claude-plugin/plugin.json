@@ -1,10 +1,18 @@
 {
   "name": "project-factory",
-  "description": "Spec-driven multi-agent delivery framework as a plugin. An orchestrator skill drives 11 specialized subagents and 5 deterministic workflows through a gated lifecycle (requirements -> OpenSpec specs -> capability slices -> test-first build -> adversarial review -> output+trajectory evals -> QA proof -> UAT) with a trace chain, ratchets, and cost-tiered automations. Add it to a new or existing repo: /project-factory:init scaffolds the loop for greenfield; /project-factory:onboard retrofits an existing codebase (reverse-engineers requirements + baseline specs). The skill then runs the whole delivery under its control.",
-  "version": "1.2.0",
+  "description": "Self-improving, spec-driven multi-agent delivery framework as a plugin. v2 adds the self-improvement layer: acceptance-method escrow, three-valued gates (NOT-EARNED), process-health ledger, correction intake, lessons library, factory-integrity lock, and the visual-parity playbook (multi-layer L1-L5 acceptance, block-conquest, continuum sweep). An orchestrator skill drives 11 specialized subagents and 5 deterministic workflows through a gated lifecycle (requirements -> OpenSpec specs -> capability slices -> test-first build -> adversarial review -> output+trajectory evals -> QA proof -> UAT) with a trace chain, ratchets, and cost-tiered automations. Add it to a new or existing repo: /project-factory:init scaffolds the loop for greenfield; /project-factory:onboard retrofits an existing codebase (reverse-engineers requirements + baseline specs). The skill then runs the whole delivery under its control.",
+  "version": "2.0.0",
   "license": "MIT",
   "author": {
     "name": "koldo"
   },
-  "keywords": ["sdlc", "spec-driven", "orchestrator", "multi-agent", "openspec", "evals", "qa"]
+  "keywords": [
+    "sdlc",
+    "spec-driven",
+    "orchestrator",
+    "multi-agent",
+    "openspec",
+    "evals",
+    "qa"
+  ]
 }
