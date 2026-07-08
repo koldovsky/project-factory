@@ -1,11 +1,14 @@
 # Self-Improving Project Factory
 
-**Private fork of Project Factory** — the multi-agent
-SDD delivery framework — extended with a **reflection & self-improvement
-layer**: the factory now measures its own process with the same exit-coded
-rigor it applies to the product, turns human corrections into artifacts no
-gate can pass over, and propagates earned lessons into the next project's
-gates. The layer is grounded in three field studies in this repo:
+**The self-improving evolution of [Project Factory](#project-factory--multi-agent-sdd-delivery-framework)** —
+the multi-agent SDD delivery framework — extended with a **reflection &
+self-improvement layer**: the factory now measures its own process with the
+same exit-coded rigor it applies to the product, turns human corrections into
+artifacts no gate can pass over, and propagates earned lessons into the next
+project's gates. It is a public superset — every project-factory capability
+plus the reflection layer; nothing here is client-specific (all fixtures are
+synthetic, and campaign lessons cite their field reports abstractly). The layer
+is grounded in three field studies in this repo:
 [the reflection mechanism design](docs/field-reports/2026-07-02-reflection-mechanism-design.md)
 (the winning "Process-Health Ledger" design, 8 mechanisms, 12-step plan),
 [the pixel-perfect forensics](docs/field-reports/2026-07-02-pixel-perfect-forensics.md)
@@ -13,7 +16,7 @@ gates. The layer is grounded in three field studies in this repo:
 it never executed), and
 [the 13-project course field study](docs/field-reports/2026-07-02-course-field-study.md).
 
-## What is new in this fork
+## What is new in the self-improving layer
 
 The eight mechanisms (each shipped with an executed red→green proof under
 `tests/`; run `npm test`):
@@ -56,9 +59,37 @@ failure lacked), the operator guide in
 non-negotiable invariant: honesty checks are gate fixes with **no
 off-switch** — `FACTORY_TELEMETRY=off` disables telemetry emission only.
 
+## Parity Playbook
+
+For pixel-parity / visual-fidelity work (reproduce a live site at ≥ near-100%),
+the layer adds a **multi-layer parity acceptance** pattern upstreamed from the
+parity campaign (see [docs/self-improvement.md](docs/self-improvement.md#parity-playbook)
+for the full chapter, and the `templates/docs/requirements.template.md` NFR
+example). Three earned lessons drive it (installed into `AGENTS.md` at init):
+
+1. **[block-conquest-doctrine](lessons/block-conquest-doctrine/lesson.md)** —
+   iterate **block by block to a per-block definition-of-done** (unpaired 0 /
+   geometry 0 / paint 0 / asset 0 / pixel ≥ floor); the full-page pixel average
+   is telemetry, never the gate. Converge each block with the
+   **overlay / onion-skin** feedback pattern.
+2. **[sampling-blindness](lessons/sampling-blindness/lesson.md)** — verified
+   samples are **never continuum coverage**. Every sampled check declares its
+   sampling dimension and a **stricter-instrument escalation path** (5-width
+   matrix → fine-step continuum pixel sweep; geometry channel → pixel channel).
+3. **[capture-determinism](lessons/capture-determinism/lesson.md)** —
+   neutralize every capture non-determinism source (free-run carousel timers,
+   sub-pixel clip origin, `captureBeyondViewport` fixed-chrome bleed, unsettled
+   lazy widgets, uncleared persistence) **before** a below-floor sample is
+   trusted as a product defect.
+
+The acceptance escrow ties in: the multi-layer parity roll-up is the fresh,
+threshold-passing artifact that hard `check-acceptance-methods --mode=artifact`
+joins to each declared `pixel-diff` / `vision-verify` / `e2e` tag — parity
+convergence is proven by an exit code, not by narrative.
+
 ---
 
-Everything below is the upstream framework this fork builds on.
+Everything below is the upstream framework this self-improving layer builds on.
 
 # Project Factory — Multi-Agent SDD Delivery Framework
 

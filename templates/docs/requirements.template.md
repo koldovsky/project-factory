@@ -78,6 +78,25 @@ does not count as verification.
 > `docs/qa/visual-diff/*/report.json` with score ≥ threshold AND a vision
 > report with `met: true`.
 
+> Example — the **multi-layer visual-parity NFR (L1–L5)**, the reusable shape
+> for "reproduce the live site" work. A single full-page pixel scalar hides
+> where the debt is and rewards average-chasing; make acceptance **per block**
+> across five layers, verified per section and per width. (See the Parity
+> Playbook in `docs/self-improvement.md` and the earned lessons
+> block-conquest-doctrine / sampling-blindness / capture-determinism.)
+>
+> | ID | Category | Description | Verification |
+> |---|---|---|---|
+> | NFR-19 | Visual fidelity | Rendered pages reach 100% multi-layer parity with the reference, verified **per block** (never by a page average): **L1 content** — per-section text diff empty; **L2 element style** — per-element computed-style parity (fonts/colors exact, box ±1px, position ±2px); **L3 section overlay** — per-section pixel score ≥ 0.985 with difference-blend + onion-skin overlays for review; **L4 behavior** — hover/interaction states match on both sites; **L5 breakpoint matrix** — L1–L4 hold at 320/390/768/1440/1920, and a fine-step continuum pixel sweep (declared sampling dimension + escalation) covers between-sample widths. Every capture is proven deterministic before a below-floor sample counts. | pixel-diff, vision-verify, e2e |
+>
+> The roll-up artifact (`docs/qa/parity/summary.json`) emits
+> `status: "passed"` only when **all** of L1–L5 pass at **all** widths; a block
+> at `unpaired = 0 / geometry = 0 / paint = 0 / asset = 0 / pixel ≥ floor` is
+> "done", and the page is done only when every block is. `check-acceptance-methods
+> --mode=artifact` joins the `pixel-diff` (score), `vision-verify` (met) and
+> `e2e` (status passed) tags to that one file; the full-page scalar is retained
+> as **telemetry only**, not an acceptance artifact.
+
 ## 4 Constraints
 
 ### 4.1 Technical Constraints

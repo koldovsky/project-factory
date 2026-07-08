@@ -123,6 +123,62 @@ Every check prints one `Scope: <n> <unit>` line and one final
 `Result: PASS|FAIL|SKIP-pending|NOT-EARNED[, N warning(s)]` line — machine-
 parseable by qa-verify and the ledger.
 
+## Parity Playbook
+
+For pixel-parity / visual-fidelity deliveries (reproduce a live reference at
+≥ near-100% fidelity), the reflection layer upstreams a **multi-layer parity
+acceptance** pattern and three earned lessons from the parity campaign
+(motivating failure: [pixel forensics](field-reports/2026-07-02-pixel-perfect-forensics.md)).
+The lessons install into the target project's `AGENTS.md` at init/onboard; the
+NFR shape lives in `templates/docs/requirements.template.md` (the L1–L5 row).
+
+### Block conquest, not page-average
+
+Do **not** iterate toward a full-page pixel average — it launders per-block
+debt and oscillates. Iterate **block by block to a per-block definition-of-done**
+([block-conquest-doctrine](../lessons/block-conquest-doctrine/lesson.md)): a
+block is done only when, independently, `unpaired = 0`, `geometry = 0`,
+`paint = 0`, `asset = 0`, and `pixel ≥ floor`; the page is done only when every
+block is. The full-page scalar is **demoted to telemetry** (trend it, don't gate
+on it). Converge each block with the **overlay / onion-skin** feedback pattern:
+a difference-blend overlay plus a 50% onion-skin composite of the block on both
+sites, reviewed by eye/vision, localizes the residual so it drops to zero before
+the next block is conquered.
+
+### The sweep completes the matrix (and states its blindness)
+
+A discrete matrix (five widths, a fixed element set, a single geometry channel)
+is necessary but **never continuum coverage**
+([sampling-blindness](../lessons/sampling-blindness/lesson.md)). Every sampled
+check declares its **sampling dimension** and a **stricter-instrument escalation
+path**, and the escalation actually runs before a DoD is claimed: a five-width
+matrix escalates to a **fine-step continuum pixel sweep**; a geometry-only sweep
+escalates to a **pixel channel** over the same sweep. Before any below-floor
+sample is treated as a product defect, the capture is proven deterministic
+against the [capture-determinism](../lessons/capture-determinism/lesson.md)
+gotchas ledger (free-run carousel timers, sub-pixel clip origin,
+`captureBeyondViewport` fixed-chrome bleed, unsettled lazy widgets, uncleared
+persistence) — an unstable capture is a harness defect, filed, not a finding.
+
+### How it integrates with the acceptance escrow
+
+Block conquest and the sweep produce the evidence; the **acceptance-contract
+auditor** (mechanism 2) holds the escrow. The multi-layer parity roll-up
+(per-section overlay ≥ floor across the width matrix, L1 content / L2 element
+style / L4 behavior all clean) is the fresh, threshold-passing **artifact** that
+hard `check-acceptance-methods --mode=artifact` joins to each declared
+`pixel-diff` / `vision-verify` / `e2e` tag on the NFR. Until that artifact
+exists and passes, artifact mode reports `missing-artifact` honestly (NOT-EARNED
+over product code, never a vacuous PASS). A `Status: open` waiver may escrow a
+deferred sub-item **visibly**; once the waiver is closed the suppression stops
+(PD-7) and the item resurfaces on the gate. Parity convergence is therefore
+proven by an exit code joined to a declared method — not by a maker's narrative.
+
+The parity checks themselves (`check-parity-suite`, `parity-block-loop`) enter
+`RULES-CHANGELOG.md` as **experimental** and climb the ladder on ≥ 2 truthful
+runs with 0 false positives; the single-scalar `check-visual-fidelity` is
+superseded as the acceptance instrument but retained for telemetry.
+
 ## Off-switch semantics (read this twice)
 
 - `FACTORY_TELEMETRY=off` disables **ledger emission only**. Nothing is
