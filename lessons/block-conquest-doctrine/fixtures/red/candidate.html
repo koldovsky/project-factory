@@ -1,0 +1,13 @@
+<!doctype html>
+<!-- RED candidate. Page-AVERAGE pixel is high (~0.9965, above the 0.985 floor)
+     so a page-average verdict renders green — but the `hero` block is NOT
+     done: it has 3 unpaired elements, 1 geometry break and 1 missing asset
+     that the high scalar cannot see. Per-block definition-of-done catches it. -->
+<html lang="en">
+  <body>
+    <section data-block="header"   data-pixel="0.999" data-unpaired="0" data-geometry="0" data-paint="0" data-asset="0">header</section>
+    <section data-block="hero"     data-pixel="0.992" data-unpaired="3" data-geometry="1" data-paint="0" data-asset="1">hero</section>
+    <section data-block="features" data-pixel="0.998" data-unpaired="0" data-geometry="0" data-paint="0" data-asset="0">features</section>
+    <section data-block="footer"   data-pixel="0.997" data-unpaired="0" data-geometry="0" data-paint="0" data-asset="0">footer</section>
+  </body>
+</html>

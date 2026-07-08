@@ -1,0 +1,10 @@
+{
+  "subject": "../page.html",
+  "note": "RED — autoplay was stopped but free-run timers survive; sub-pixel clip origin; captureBeyondViewport bleeds the fixed chrome; the lazy widget was not settled; the persistence probe was not cleared.",
+  "carousel": { "autoplayStopped": true, "freeRunTimersCleared": false },
+  "clipOrigin": "sub-pixel",
+  "captureBeyondViewport": true,
+  "hasFixedChrome": true,
+  "lazyWidgetsSettled": false,
+  "persistenceCleared": false
+}

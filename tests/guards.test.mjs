@@ -169,7 +169,9 @@ console.log("\n[green] check-recordings: normalized Scope + Result lines on stdo
   const r = runScript(RECORDINGS, [], dir);
   assert(r.code === 0, "exits 0", `exit=${r.code}\nstderr: ${r.stderr}`);
   assert(scopeLines(r.stdout).join() === "Scope: 0 clip(s) across 0 manifest(s)", "prints exactly one Scope line", r.stdout);
-  assert(/^Result: PASS, 1 warning\(s\)$/m.test(r.stdout), "prints Result: PASS, 1 warning(s)", r.stdout);
+  // PD-4: an empty tree with no product code and no --strict is SKIP-pending,
+  // never a bare PASS over zero clips (the vacuous-pass-not-earned rule).
+  assert(/^Result: SKIP-pending, 1 warning\(s\)$/m.test(r.stdout), "prints Result: SKIP-pending, 1 warning(s)", r.stdout);
 }
 
 console.log("\n[green] check-trajectory: normalized Scope + Result lines on stdout");

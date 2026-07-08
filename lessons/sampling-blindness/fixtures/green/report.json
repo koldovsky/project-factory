@@ -1,0 +1,13 @@
+{
+  "check": "width-matrix",
+  "samplingDimension": "viewport-width",
+  "coverage": "sampled",
+  "samples": [320, 390, 768, 1440, 1920],
+  "escalation": {
+    "instrument": "continuum pixel sweep",
+    "trigger": "before per-block DoD and on any near-floor sample",
+    "step": 32,
+    "range": [320, 1920]
+  },
+  "floor": 0.985
+}

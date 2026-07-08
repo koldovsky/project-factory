@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- Synthetic subject carrying the exact hazards the gotchas ledger is about:
+     a free-running carousel (autoplay timer), a position:fixed chrome bar (so
+     captureBeyondViewport would bleed it), a lazy third-party widget that
+     renders late, and an in-context persistence probe. A trustworthy capture
+     must neutralize all four; the capture.json beside each fixture records
+     whether it did. -->
+<html lang="en">
+  <head>
+    <style>
+      .chrome { position: fixed; top: 0; left: 0; right: 0; height: 48px; }
+    </style>
+  </head>
+  <body>
+    <header class="chrome">fixed chrome</header>
+    <div class="carousel" data-autoplay="true" data-interval="3000">slide 1 / slide 2 / slide 3</div>
+    <iframe class="third-party" data-lazy="true" title="widget" src="about:blank"></iframe>
+    <script>
+      // in-context persistence probe — must be cleared between captures
+      try { localStorage.setItem("parity-probe", String(Date.now())); } catch (e) {}
+    </script>
+  </body>
+</html>

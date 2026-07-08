@@ -34,5 +34,38 @@
     "installPayload": "lessons/done-claims-need-evidence/payload/agents-block.md",
     "fixtures": "lessons/done-claims-need-evidence/run-fixtures.mjs",
     "version": 1
+  },
+  {
+    "id": "sampling-blindness",
+    "title": "Verified samples are never continuum coverage",
+    "pattern": "A check samples a continuous space (viewport width, an element set, a single measurement channel), every sampled point passes, and the clean result is narrated as if the whole space were covered — with no declared sampling dimension and no escalation to a stricter instrument, a between-sample residual sits undetected.",
+    "groundedIn": [
+      "docs/field-reports/2026-07-02-pixel-perfect-forensics.md (multi-layer parity campaign, abstract): the same blindness recurred three times — the element matrix (fixed element set), the width matrix (five calibrated widths), and a geometry-only sweep that read 0 divergence bands while 100+ below-floor pixel residuals sat between its samples"
+    ],
+    "installPayload": "lessons/sampling-blindness/payload/agents-block.md",
+    "fixtures": "lessons/sampling-blindness/run-fixtures.mjs",
+    "version": 1
+  },
+  {
+    "id": "block-conquest-doctrine",
+    "title": "Per-block definition-of-done beats page-average iteration",
+    "pattern": "Visual parity is chased via a single full-page pixel average, which launders per-block debt (one block regresses as another improves and the mean barely moves) and never converges; a high average sits over an un-conquered block with unpaired/geometry/paint/asset defects the scalar cannot see.",
+    "groundedIn": [
+      "docs/field-reports/2026-07-02-pixel-perfect-forensics.md (multi-layer parity campaign, abstract): the full-page pixel scalar (~0.9449 desktop / ~0.9052 mobile) was demoted to telemetry and acceptance moved to per-section overlay >= floor with zero unpaired/geometry/paint/asset per block; the overlay/onion-skin feedback pattern made block-by-block convergence tractable"
+    ],
+    "installPayload": "lessons/block-conquest-doctrine/payload/agents-block.md",
+    "fixtures": "lessons/block-conquest-doctrine/run-fixtures.mjs",
+    "version": 1
+  },
+  {
+    "id": "capture-determinism",
+    "title": "Neutralize the capture before trusting it — the gotchas ledger",
+    "pattern": "Below-floor parity samples are treated as product regressions when they are capture artifacts: a non-deterministic screenshot pipeline (free-run carousel timers, sub-pixel clip origin, captureBeyondViewport fixed-chrome bleed, unsettled lazy third-party widgets, uncleared in-context persistence) manufactures ghosts that waste the whole loop.",
+    "groundedIn": [
+      "docs/field-reports/2026-07-02-pixel-perfect-forensics.md (multi-layer parity campaign, abstract): a fresh sweep over-counted by 100+ samples plus phantom geometry bands purely because a lazy live widget rendered blank under the fast capture path — a harness defect, not a product regression"
+    ],
+    "installPayload": "lessons/capture-determinism/payload/agents-block.md",
+    "fixtures": "lessons/capture-determinism/run-fixtures.mjs",
+    "version": 1
   }
 ]

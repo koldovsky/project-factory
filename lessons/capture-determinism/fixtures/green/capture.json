@@ -1,0 +1,10 @@
+{
+  "subject": "../page.html",
+  "note": "GREEN — every known non-determinism source neutralized before capture.",
+  "carousel": { "autoplayStopped": true, "freeRunTimersCleared": true },
+  "clipOrigin": "integer",
+  "captureBeyondViewport": false,
+  "hasFixedChrome": true,
+  "lazyWidgetsSettled": true,
+  "persistenceCleared": true
+}

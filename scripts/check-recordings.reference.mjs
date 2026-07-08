@@ -23,6 +23,14 @@
 //   node scripts/check-recordings.mjs --min-bytes 20000
 //   node scripts/check-recordings.mjs --require-vision   # vision verdict mandatory
 //   node scripts/check-recordings.mjs --check-fresh      # committed report must match
+//   node scripts/check-recordings.mjs --strict           # Scope 0 => NOT-EARNED even with no product code
+//
+// PRIME DIRECTIVE (PD-4): this gate renders its OWN verdict on an empty
+// evidence base — it never prints a bare PASS over "Scope: 0 clip(s)". When
+// product code exists (or under --strict), zero recorded clips is NOT-EARNED
+// (exit 1), mirroring the vacuous-pass-not-earned lesson: absence of evidence
+// is never rendered as success. Only a genuinely pre-Phase-6 tree (no product
+// code, no --strict) prints SKIP-pending (exit 0, visible, still never PASS).
 import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -34,7 +42,14 @@ const flagVal = (n, d) => {
   return i >= 0 ? argv[i + 1] : d;
 };
 const MIN_BYTES = Number(flagVal("--min-bytes", 10000));
+const STRICT = flags.has("--strict");
 const PATHS = { qaDir: "docs/qa", reportOut: "docs/qa/recordings-report.md" };
+
+// Product-code heuristic (mirrors the vacuity rule): if any of these dirs
+// carries source, the build is past Phase 6 and an empty recordings base is
+// NOT-EARNED, not "expected before Phase 6".
+const CODE_DIRS = ["app", "src", "lib", "server", "packages", "pages", "components"];
+const CODE_EXT = /\.(m?[jt]sx?|cjs|py|go|rb|java|cs|php|svelte|vue)$/i;
 
 const failures = [];
 const warnings = [];
@@ -53,6 +68,12 @@ function* walk(dir, match) {
   }
 }
 const sizeOf = (rel) => (existsSync(join(root, rel)) ? statSync(join(root, rel)).size : -1);
+function hasProductCode() {
+  for (const d of CODE_DIRS) {
+    for (const _ of walk(d, (e) => CODE_EXT.test(e))) return true;
+  }
+  return false;
+}
 
 let manifestCount = 0;
 let clipCount = 0;
@@ -89,7 +110,35 @@ for (const mf of walk(PATHS.qaDir, (f) => f === "manifest.json")) {
   }
 }
 
-if (manifestCount === 0) warn("recordings", `no manifest.json under ${PATHS.qaDir}/ (expected before Phase 6)`);
+// PD-4 verdict: an empty evidence base is NEVER a bare PASS. Compute the
+// three-valued verdict BEFORE rendering so both the report file and stdout
+// agree.
+const productCode = hasProductCode();
+let verdict;
+let exitCode;
+let notEarnedMsg = null;
+if (failures.length) {
+  verdict = "FAIL";
+  exitCode = 1;
+} else if (clipCount === 0) {
+  if (STRICT || productCode) {
+    verdict = "NOT-EARNED";
+    exitCode = 1;
+    notEarnedMsg = productCode
+      ? `Scope 0: no recorded clips while product code exists (${CODE_DIRS.join("/")}) — recordings NOT-EARNED, never a bare PASS over an empty evidence base`
+      : `Scope 0 under --strict: no recorded clips — recordings NOT-EARNED`;
+  } else {
+    // Genuinely pre-Phase-6: no product code, not --strict. Visible, not PASS.
+    verdict = "SKIP-pending";
+    exitCode = 0;
+  }
+} else {
+  verdict = "PASS";
+  exitCode = 0;
+}
+
+if (manifestCount === 0 && verdict !== "NOT-EARNED")
+  warn("recordings", `no manifest.json under ${PATHS.qaDir}/ (expected before Phase 6)`);
 
 const report = `# Recordings Report (generated - do not hand-edit)
 
@@ -98,7 +147,7 @@ is a REAL artifact (video exists + >= ${MIN_BYTES}B, screenshot exists, flow
 asserted, vision met) — not just an id mentioned in a manifest.
 
 Scope: ${clipCount} clip(s) across ${manifestCount} manifest(s).
-Result: ${failures.length === 0 ? "PASS" : `FAIL (${failures.length})`}${warnings.length ? `, ${warnings.length} warning(s)` : ""}
+Result: ${verdict}${failures.length ? ` (${failures.length})` : ""}${warnings.length ? `, ${warnings.length} warning(s)` : ""}
 
 | Clip | Proves | Video bytes | Shot | Asserted | Vision |
 |---|---|---|---|---|---|
@@ -124,6 +173,7 @@ if (flags.has("--check-fresh")) {
 
 for (const w of warnings) console.warn(`WARN  [${w.id}] ${w.msg}`);
 for (const f of failures) console.error(`FAIL  [${f.id}] ${f.msg}`);
+if (notEarnedMsg) console.error(`NOT-EARNED  [recordings] ${notEarnedMsg}`);
 console.log(`\nScope: ${clipCount} clip(s) across ${manifestCount} manifest(s)`);
-console.log(`Result: ${failures.length ? "FAIL" : "PASS"}${warnings.length ? `, ${warnings.length} warning(s)` : ""}`);
-process.exit(failures.length ? 1 : 0);
+console.log(`Result: ${verdict}${warnings.length ? `, ${warnings.length} warning(s)` : ""}`);
+process.exit(exitCode);

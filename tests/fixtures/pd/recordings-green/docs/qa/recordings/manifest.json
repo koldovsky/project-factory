@@ -1,0 +1,13 @@
+{
+  "kind": "demo",
+  "results": [
+    {
+      "id": "home-smoke",
+      "title": "Home page renders and links work",
+      "proof": "FR-1",
+      "video": "docs/qa/recordings/clip-1.webm",
+      "screenshot": "docs/qa/recordings/clip-1.png",
+      "asserted": true
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "check": "width-matrix",
+  "coverage": "continuum",
+  "claim": "100% parity at all widths",
+  "samples": [320, 390, 768, 1440, 1920],
+  "floor": 0.985
+}

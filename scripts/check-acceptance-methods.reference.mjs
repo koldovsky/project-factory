@@ -57,9 +57,14 @@
 // Per-token entries merge over the built-in defaults; unknown tokens extend
 // the vocabulary. A corrupt config is a FAIL, not a silent fallback.
 //
-// WAIVERS: a file under docs/qa/waivers/*.md that names the requirement id
-// suppresses that requirement's failures — with a visible WAIVED line and a
-// counted warning. Never silent.
+// WAIVERS (PD-7): a file under docs/qa/waivers/*.md suppresses a requirement's
+// failures only while it is OPEN. The matcher keys on the waiver's STATUS, not
+// on mere mention of the requirement id: a `Status: open` (or missing status,
+// treated as open for back-compat) waiver suppresses with a visible WAIVED
+// line + counted warning; a `Status: closed|resolved|expired|revoked` waiver
+// STOPS suppressing — the failure resurfaces as a normal FAIL and a visible
+// "note: waiver … is closed" line is printed. Never silent, and a stale
+// closed waiver can no longer launder a live failure.
 //
 // OUTPUTS:
 //   trace/acceptance-contracts.json    requirement id -> [{method, mechanism,
@@ -339,10 +344,29 @@ if (contracts.size === 0) {
 }
 
 // ---------- waivers (visible, never silent) ----------
-const waivedIds = new Map(); // id -> waiver file
+// PD-7: key on the waiver's STATUS, not on mere id mention. A `Status:` /
+// `State:` field with a CLOSED-class value (closed | resolved | expired |
+// revoked | withdrawn) stops the waiver from suppressing — the failure
+// resurfaces. Missing status = open (back-compat with unstatused waivers).
+const CLOSED_STATUS = new Set(["closed", "resolved", "expired", "revoked", "withdrawn", "done"]);
+const waiverStatusOf = (body) => {
+  const m = body.match(/^\s*(?:>?\s*)?(?:\*\*|_)?\s*(?:status|state)\s*(?:\*\*|_)?\s*[:=]\s*`?\s*([A-Za-z-]+)/im);
+  return m ? m[1].toLowerCase() : "open";
+};
+const waivedIds = new Map(); // id -> waiver file (OPEN waivers only)
+const closedWaiverNotes = []; // visible "no longer suppresses" lines
 walkAll("docs/qa/waivers", (rel) => {
   if (!rel.endsWith(".md")) return;
-  for (const id of idsIn(read(rel) ?? "")) if (!waivedIds.has(id)) waivedIds.set(id, rel);
+  const body = read(rel) ?? "";
+  const status = waiverStatusOf(body);
+  const open = !CLOSED_STATUS.has(status);
+  for (const id of idsIn(body)) {
+    if (open) {
+      if (!waivedIds.has(id)) waivedIds.set(id, rel);
+    } else {
+      closedWaiverNotes.push({ id, rel, status });
+    }
+  }
 });
 
 // ---------- mechanism resolution ----------
@@ -595,6 +619,8 @@ writeFileSync(
 // ---------- report ----------
 for (const s of skips) console.log(s);
 for (const wline of waivedLines) console.log(wline);
+for (const cw of closedWaiverNotes)
+  console.log(`note: waiver ${cw.rel} for ${cw.id} is ${cw.status} — no longer suppresses (failure resurfaces if present)`);
 for (const w of warnings) console.warn(`WARN  [${w.id}] ${w.msg}`);
 for (const f of failures) console.error(`FAIL  [${f.id}] ${f.msg}`);
 for (const d of drafted) console.log(`drafted ${d} — implement or waive before Phase 4`);
