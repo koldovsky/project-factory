@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Parity fixture — local (deliberate deltas)</title>
+<style>
+  /* Same base as reference, with FOUR deliberate deltas so the harness reds:
+       1. hero background tint (#ffeeee)   -> L3 section overlay score < floor
+                                              + a paint mismatch on the block root
+       2. hero h1 text "Hello There"       -> L1 content diff + subtree unpaired
+       3. extra .badge span in the hero    -> subtree unpaired (local-only node)
+       4. .row stacks below 900px          -> continuum-sweep tier band at narrow
+                                              widths (reference stays a row) */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; color: #111; background: #ffffff; }
+  main { width: 100%; }
+  section, footer { padding: 24px; }
+  .hero { background: #ffeeee; }
+  .hero h1 { font-size: 32px; line-height: 40px; font-weight: 700; margin-bottom: 12px; }
+  .hero p { font-size: 16px; line-height: 24px; margin-bottom: 16px; }
+  .badge { display: inline-block; background: #cc1111; color: #ffffff; font-size: 12px;
+           padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; }
+  .cta { display: inline-block; background: #1155cc; color: #ffffff; padding: 10px 20px;
+         border-radius: 4px; font-size: 16px; text-decoration: none; }
+  #sec-features { background: #f4f4f4; }
+  #sec-features h2 { font-size: 24px; line-height: 32px; margin-bottom: 16px; }
+  .row { display: flex; flex-direction: row; gap: 16px; }
+  .card { flex: 1; background: #ffffff; border: 1px solid #dddddd; border-radius: 6px;
+          padding: 24px; font-size: 18px; text-align: center; }
+  @media (max-width: 900px) {
+    .row { flex-direction: column; }
+  }
+  footer { background: #222222; color: #eeeeee; }
+  footer p { font-size: 14px; line-height: 20px; }
+</style>
+</head>
+<body>
+<main>
+  <section class="hero" id="sec-hero">
+    <span class="badge">NEW</span>
+    <h1>Hello There</h1>
+    <p>Build it right the first time.</p>
+    <a class="cta" href="#start">Get Started</a>
+  </section>
+  <section id="sec-features">
+    <h2>Features</h2>
+    <div class="row">
+      <div class="card">Fast</div>
+      <div class="card">Safe</div>
+      <div class="card">Simple</div>
+    </div>
+  </section>
+  <footer id="sec-footer">
+    <p>(c) 2026 Example Reference</p>
+  </footer>
+</main>
+</body>
+</html>

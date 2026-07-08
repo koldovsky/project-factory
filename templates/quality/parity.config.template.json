@@ -1,0 +1,105 @@
+{
+  "$comment": "Multi-layer parity acceptance config — copy to quality/parity.config.json in the target project and edit for YOUR reference/local pages. Consumed by scripts/check-parity-suite.mjs (the L1-L5 gate; reference: scripts/check-parity-suite.reference.mjs) and scripts/parity-block-loop.mjs (block depth + continuum sweep; reference: scripts/parity-block-loop.reference.mjs). NOTHING here is site-specific by design: every value below is an example against a placeholder reference.example page. referenceUrl is the ground-truth page being replicated; localUrl is the build under test. All comment keys ($comment, $sectionsComment, ...) are ignored by the loader.",
+
+  "referenceUrl": "https://reference.example/",
+  "localUrl": "http://localhost:3000/",
+
+  "$breakpointsComment": "The widths the L1-L5 suite captures at. name is used as an artifact directory (must match [A-Za-z0-9._-]+). matrixBreakpoint (optional) names the width at which the L2 element matrix + L1 content are sampled (width-invariant layers); defaults to the last breakpoint.",
+  "breakpoints": [
+    { "name": "320", "width": 320, "height": 800 },
+    { "name": "390", "width": 390, "height": 844 },
+    { "name": "768", "width": 768, "height": 1024 },
+    { "name": "1440", "width": 1440, "height": 900 },
+    { "name": "1920", "width": 1920, "height": 1080 }
+  ],
+  "matrixBreakpoint": "1440",
+
+  "$widthsComment": "canonicalWidths is what `--width all` expands to in the block-loop; defaults to the breakpoint widths. widthHeights pairs a viewport height with each capture width (defaults filled from breakpoints). widthRange bounds any single arbitrary `--width N` (between-canonical widths are first-class — that is where responsive-tier gaps hide).",
+  "canonicalWidths": [320, 390, 768, 1440, 1920],
+  "widthHeights": { "320": 800, "390": 844, "768": 1024, "1440": 900, "1920": 1080 },
+  "widthRange": { "min": 320, "max": 2560 },
+
+  "$floorsComment": "The signed acceptance floors. A project may TIGHTEN these; loosening sectionScoreFloor emits a warning so a weakened gate cannot pass silently. sectionScoreFloor = L3 per-section AA-tolerant pixelmatch floor. boxTolPx/positionTolPx = L2 geometry tolerances (fonts/colors are exact). pixelmatchThreshold/includeAA tune the AA-immune pixel diff. geomTolPx/paintPxTolPx/opacityTol = full-subtree diff tolerances.",
+  "floors": {
+    "sectionScoreFloor": 0.985,
+    "boxTolPx": 1,
+    "positionTolPx": 2,
+    "pixelmatchThreshold": 0.15,
+    "includeAA": false,
+    "geomTolPx": 0.5,
+    "paintPxTolPx": 0.5,
+    "opacityTol": 0.01
+  },
+
+  "$sweepComment": "Continuum-sweep knobs (block-loop --sweep). step = geometry grid (grid-aligned to min so canonical breakpoints land on samples). viewportHeight holds vh-layout constant across widths. tol/absFloor/jumpTol/baselinePctl/strongTol tune band detection. pixelStep = coarse pixel-channel grid; pixelFine overlays a finer grid over [pixelFineFrom..pixelFineTo] (the half-screen review band). Geometry-only 0 bands is NOT pixel-perfect — the pixel channel is what catches same-tier drift.",
+  "sweep": {
+    "min": 320,
+    "max": 1920,
+    "step": 16,
+    "viewportHeight": 1000,
+    "tol": 0.05,
+    "absFloor": 0.03,
+    "jumpTol": 0.04,
+    "baselinePctl": 20,
+    "strongTol": 0.2,
+    "pixelStep": 64,
+    "pixelFine": 32,
+    "pixelFineFrom": 992,
+    "pixelFineTo": 1440
+  },
+
+  "$prepareComment": "Capture-determinism knobs — the earned lessons, all config-driven. cookieDismissSelectors: consent/cookie controls to click before capture. suppressSelectors: elements to display:none (timed overlays, promos, sticky banners that would poison a capture — a determinism hide, never a gate mask). counterSelectors: JS count-up regions to poll until settled (they ignore reduced-motion). pinScripts: page-context expressions to pin YOUR carousel/autoplay to slide 0 (a generic Swiper walk is built in; add one string per bespoke carousel). renderGates (PD-16): selectors that must be present + non-empty before a shot — if one never fills, the sample FAILS with a named reason and is never scored (never score a half-rendered page). settleMs* are the post-prepare quiet periods.",
+  "prepare": {
+    "settleMsReference": 2200,
+    "settleMsLocal": 1400,
+    "cookieDismissSelectors": ["#accept-cookies", "button:has-text('Accept')"],
+    "suppressSelectors": [".cookie-banner", ".promo-overlay"],
+    "counterSelectors": ["[data-counter]"],
+    "pinScripts": [
+      "document.querySelectorAll('.carousel').forEach(function(el){ if (el.__api && el.__api.pause) el.__api.pause(); })"
+    ],
+    "renderGates": [
+      { "selector": "[data-testid='hero']", "note": "hero must render before the first shot (lazy third-party mount)" }
+    ],
+    "renderGateTimeoutMs": 8000
+  },
+
+  "$pickMapComment": "Generic pick -> relative-selector map for the L2 element matrix. Override any entry for your markup; element entries may also carry an explicit {custom:true, local, live} pair when a pick is not enough.",
+  "pickMap": {
+    "heading": ":is(h1,h2,h3)",
+    "paragraph": "p",
+    "button": ":is(a,button)",
+    "link": "a",
+    "input": "input",
+    "card": ":is(.card,article,li)"
+  },
+
+  "$sectionsComment": "Each section maps a stable local id to a root selector on BOTH the local build and the reference page. These are the L1/L3 comparison units and the block-loop's --block ids. Both selectors are Playwright-engine selectors.",
+  "sections": [
+    { "id": "01-hero", "label": "Hero", "local": "main > section:nth-of-type(1)", "live": "section.hero" },
+    { "id": "02-features", "label": "Features", "local": "#features", "live": "#features" },
+    { "id": "03-footer", "label": "Footer", "local": "footer", "live": "footer" }
+  ],
+
+  "$elementsComment": "Curated key elements for the L2 computed-style matrix. pick resolves via pickMap inside the section root on both sides; index selects the nth match; custom entries carry explicit local/live selectors. role is a human label.",
+  "elements": [
+    { "key": "hero-heading", "section": "01-hero", "pick": "heading", "index": 0, "role": "heading" },
+    { "key": "hero-cta", "section": "01-hero", "pick": "button", "index": 0, "role": "primary button" },
+    { "key": "features-heading", "section": "02-features", "pick": "heading", "index": 0, "role": "heading" },
+    { "key": "footer-copyright", "section": "03-footer", "custom": true, "local": "footer p", "live": "footer p", "role": "footer text" }
+  ],
+
+  "$hoverComment": "L4 hover probes. Each hovers `trigger` and reads computed `props` off `target` (defaults to trigger) BEFORE and AFTER, on BOTH sites; a mismatch is reported when the two sites' before->after deltas differ. Selectors are section-root-relative.",
+  "hover": [
+    { "key": "hero-cta-hover", "section": "01-hero", "trigger": ":is(a,button)", "props": ["backgroundColor", "color"], "note": "primary CTA hover" }
+  ],
+
+  "$behaviorsComment": "L4 boolean behaviour probes (config-driven generic types). A FAIL is when the local boolean differs from the reference boolean (or the local probe errors). Types: single-open {itemSelector, triggerSelector?} — opening item 2 closes item 1 (accordion); toggle-visible {trigger, target} — clicking trigger reveals target (modal/menu); persist-dismiss {banner, dismiss} — the IN-CONTEXT persistence probe: see the banner on-screen, dismiss it, RELOAD THE SAME CONTEXT, assert it stays off-screen (never a fresh context, never a CSS-only visibility check); recompute {input, output} — changing the input changes the output region's text.",
+  "behaviors": [
+    { "key": "accordion-single-open", "type": "single-open", "itemSelector": ".accordion-item", "note": "opening a 2nd row closes the 1st" },
+    { "key": "consent-persists", "type": "persist-dismiss", "banner": ".cookie-banner", "dismiss": "#accept-cookies", "note": "accepting then reloading keeps the banner hidden (same-context persistence)" }
+  ],
+
+  "$masksComment": "Optional regions that legitimately differ (dynamic timestamps, third-party embeds). Reserved for masked-diff extensions; recorded for auditability. Each: { page: '*'|pathname, selectorOrRect }.",
+  "masks": []
+}
